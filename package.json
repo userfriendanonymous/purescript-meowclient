@@ -1,0 +1,18 @@
+{
+  "name": "meowclient",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "keys-converter": "^3.0.4",
+    "meowclient": "github:webdev03/meowclient"
+  }
+}
