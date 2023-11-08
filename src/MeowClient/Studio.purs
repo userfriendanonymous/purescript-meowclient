@@ -6,14 +6,13 @@ import Data.Argonaut (Json)
 import Data.Either (Either(..))
 import Effect.Aff (Aff)
 import Effect.Exception (Error)
-import ForeignUtils (RightF, LeftF)
 import MeowClient (JsonOrJsError)
 import MeowClient.Profile.Api as ProfileApi
 import MeowClient.Session as Session
 import MeowClient.Studio.Api as Api
 import MeowClient.Studio.MyStatus as MyStatus
 import MeowClient.Studio.Project as Project
-import MeowClient.Utils (EffPromise, toAffDecodeResult)
+import MeowClient.Utils (RightF, LeftF, EffPromise, toAffDecodeResult)
 
 type Session = Session.Value
 

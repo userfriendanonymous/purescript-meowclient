@@ -10,12 +10,13 @@ import Effect.Class.Console (log)
 import MeowClient.Profile as Profile
 import MeowClient.Project as Project
 import MeowClient.Session as Session
+import MeowClient.Studio as Studio
 import Partial.Unsafe (unsafePartial)
 
 main :: Effect Unit
 main = launchAff_ $ unsafePartial do
   let
     session = Session.value
-    project = { session, id : 500455968 }
-  value <- Project.commentReplies 328826514 0 20 project
+    studio = { session, id : 25235219 }
+  value <- Studio.getProjects 10 0 studio
   log $ show value
