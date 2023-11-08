@@ -8,13 +8,14 @@ import Data.Traversable (traverse)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Exception (Error)
-import MeowClient (JsonOrJsError)
 import MeowClient.JsonOrJsError as JsonOrJsError
 import MeowClient.SearchProjects as SearchProjects
 import MeowClient.SearchProjectsMode as SearchProjectsMode
 import MeowClient.Utils (LeftF, RightF, decodeJsErrorOrJson, mapLeft)
 import Node.Buffer (Buffer)
 import Promise.Aff (Promise, toAffE)
+
+type JsonOrJsError = JsonOrJsError.Value
 
 foreign import data Value :: Type
 

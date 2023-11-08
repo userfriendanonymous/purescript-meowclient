@@ -16,8 +16,8 @@ type Value =
             , "50x50" :: String
             , "32x32" :: String
             }
+        , status :: String
+        , bio :: String
+        , country :: String
         }
-    , status :: String
-    , bio :: String
-    , country :: String
     }

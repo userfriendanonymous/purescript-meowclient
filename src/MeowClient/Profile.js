@@ -36,7 +36,7 @@ export let messagesCountImpl = ok => err => profile =>
     catch_(ok, err, toClass(profile).getMessageCount())
 
 export let commentsImpl = ok => err => page => profile =>
-    catch_(v => ok(objToCamelCase(v)), err, toClass(profile).getComments(page))
+    catch_(v => ok(v.map(objToCamelCase)), err, toClass(profile).getComments(page))
 
 export let toggleCommentsImpl = ok => err => profile =>
     catch_(ok, err, toClass(profile).toggleComments())
