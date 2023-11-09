@@ -1,4 +1,16 @@
-module MeowClient.Profile where
+module MeowClient.Profile
+  ( Value
+  , api
+  , comment
+  , comments
+  , deleteComment
+  , follow
+  , messagesCount
+  , status
+  , toggleComments
+  , unfollow
+  )
+  where
 
 import Prelude
 

@@ -1,4 +1,22 @@
-module MeowClient.Project where
+module MeowClient.Project
+  ( Value
+  , api
+  , comment
+  , commentReplies
+  , comments
+  , isFavoriting
+  , isLoving
+  , setCommenting
+  , setFavoriting
+  , setInstructions
+  , setLoving
+  , setNotesAndCredits
+  , setThumbnail
+  , setTitle
+  , share
+  , unshare
+  )
+  where
 
 import Prelude
 

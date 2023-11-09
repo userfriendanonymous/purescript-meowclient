@@ -1,17 +1,24 @@
-module MeowClient.Session where
+module MeowClient.Session
+  ( Value
+  , init
+  , logout
+  , searchProjects
+  , uploadToAssets
+  , value
+  )
+  where
 
 import Prelude
 
-import Data.Argonaut (Json, decodeJson)
+import Data.Argonaut (Json)
 import Data.Either (Either(..))
-import Data.Traversable (traverse)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Exception (Error)
 import MeowClient.JsonOrJsError as JsonOrJsError
 import MeowClient.SearchProjects as SearchProjects
 import MeowClient.SearchProjectsMode as SearchProjectsMode
-import MeowClient.Utils (LeftF, RightF, decodeJsErrorOrJson, mapLeft)
+import MeowClient.Utils (LeftF, RightF, decodeJsErrorOrJson)
 import Node.Buffer (Buffer)
 import Promise.Aff (Promise, toAffE)
 

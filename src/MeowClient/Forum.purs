@@ -1,4 +1,10 @@
-module MeowClient.Forum where
+module MeowClient.Forum
+  ( Value
+  , createTopic
+  , setSignature
+  , topics
+  )
+  where
 
 import Prelude
 
@@ -11,10 +17,8 @@ import MeowClient.Forum.Topic as Topic
 import MeowClient.Session as Session
 import MeowClient.Utils (EffPromise, LeftF, RightF, toAffDecodeResult)
 
-type Session = Session.Value
-
 type Value =
-    { session :: Session
+    { session :: Session.Value
     , id :: Int
     }
 

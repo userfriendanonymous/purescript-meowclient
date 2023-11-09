@@ -1,4 +1,10 @@
-module MeowClient.ForumPost where
+module MeowClient.ForumPost
+  ( Value
+  , edit
+  , info
+  , source
+  )
+  where
 
 import Prelude
 
@@ -12,10 +18,9 @@ import MeowClient.Utils (EffPromise, LeftF, RightF)
 import Promise.Aff (toAffE)
 
 type JsonOrJsError = JsonOrJsError.Value
-type Session = Session.Value
 
 type Value =
-    { session :: Session
+    { session :: Session.Value
     , id :: Int
     }
 

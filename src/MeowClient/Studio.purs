@@ -1,4 +1,23 @@
-module MeowClient.Studio where
+module MeowClient.Studio
+  ( Value
+  , acceptInvite
+  , addProject
+  , api
+  , comment
+  , follow
+  , getCurators
+  , getManagers
+  , getProjects
+  , inviteCurator
+  , myStatus
+  , removeCurator
+  , removeProject
+  , setDescription
+  , setTitle
+  , toggleCommenting
+  , unfollow
+  )
+  where
 
 import Prelude
 
@@ -14,10 +33,8 @@ import MeowClient.Studio.MyStatus as MyStatus
 import MeowClient.Studio.Project as Project
 import MeowClient.Utils (RightF, LeftF, EffPromise, toAffDecodeResult)
 
-type Session = Session.Value
-
 type Value =
-    { session :: Session
+    { session :: Session.Value
     , id :: Int
     }
 
