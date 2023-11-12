@@ -14,6 +14,8 @@ to generate this file without the comments in this block.
 , dependencies =
   [ "aff"
   , "argonaut"
+  , "argonaut-codecs"
+  , "arrays"
   , "console"
   , "effect"
   , "either"
@@ -24,8 +26,11 @@ to generate this file without the comments in this block.
   , "js-promise-aff"
   , "maybe"
   , "node-buffer"
+  , "node-fs"
   , "partial"
   , "prelude"
+  , "spec"
+  , "test-unit"
   , "tuples"
   ]
 , packages = ./packages.dhall

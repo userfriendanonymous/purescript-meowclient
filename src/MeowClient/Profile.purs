@@ -7,7 +7,7 @@ module MeowClient.Profile
   , follow
   , messagesCount
   , status
-  , toggleComments
+  , toggleCommenting
   , unfollow
   )
   where
@@ -48,9 +48,9 @@ foreign import unfollowImpl :: RightF -> LeftF -> Value -> Effect (Promise (Eith
 unfollow :: Value -> Aff (Either Error Unit)
 unfollow v = toAffE $ unfollowImpl Right Left v
 
-foreign import commentImpl :: RightF -> LeftF -> String -> Int -> Int -> Value -> Effect (Promise (Either Error Unit))
+foreign import commentImpl :: RightF -> LeftF -> Int -> Int -> String -> Value -> Effect (Promise (Either Error Unit))
 
-comment :: String -> Int -> Int -> Value -> Aff (Either Error Unit)
+comment :: Int -> Int -> String -> Value -> Aff (Either Error Unit)
 comment c pid cid v = toAffE $ commentImpl Right Left c pid cid v
 
 foreign import deleteCommentImpl :: RightF -> LeftF -> Int -> Value -> Effect (Promise (Either Error Unit))
@@ -73,7 +73,7 @@ foreign import commentsImpl :: RightF -> LeftF -> Int -> Value -> Effect (Promis
 comments :: Int -> Value -> Aff (Either JsonOrJsError (Array Comment.Value))
 comments p v = decodeJsErrorOrJson <$> toAffE (commentsImpl Right Left p v)
 
-foreign import toggleCommentsImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either Error Unit))
+foreign import toggleCommentingImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either Error Unit))
 
-toggleComments :: Value -> Aff (Either Error Unit)
-toggleComments v = toAffE $ toggleCommentsImpl Right Left v
+toggleCommenting :: Value -> Aff (Either Error Unit)
+toggleCommenting v = toAffE $ toggleCommentingImpl Right Left v

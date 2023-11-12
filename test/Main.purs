@@ -2,21 +2,19 @@ module Test.Main where
 
 import Prelude
 
-import Data.Either (Either(..), hush)
-import Data.Maybe (fromJust)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
-import Effect.Class.Console (log)
-import MeowClient.Profile as Profile
-import MeowClient.Project as Project
-import MeowClient.Session as Session
-import MeowClient.Studio as Studio
-import Partial.Unsafe (unsafePartial)
+import Test.Spec (Spec, describe, it)
+import Test.Spec.Reporter (consoleReporter)
+import Test.Spec.Runner (runSpec)
+import Test.Session as TestSession
+import Test.Profile as TestProfile
 
 main :: Effect Unit
-main = launchAff_ $ unsafePartial do
-  let
-    session = Session.value
-    studio = { session, id : 25235219 }
-  value <- Studio.getProjects 10 0 studio
-  log $ show value
+main = launchAff_ $ runSpec [consoleReporter] spec
+
+spec :: Spec Unit
+spec = do
+    describe "session" TestSession.spec
+    describe "profile" TestProfile.spec
+    

@@ -1,34 +1,46 @@
 import { ScratchSession } from 'meowclient'
 import { objectKeysToCamelCaseV2 as objToCamelCase } from 'keys-converter'
 
-export let value = new ScratchSession()
+export let anonymous = new ScratchSession()
 
-let catchAsString = (ok, err, promise) => async () => {
+let catchP = (ok, err, f) => async () => {
     try {
-        return ok(await promise)
+        return ok(await f())
     } catch(e) {
         if (!(e instanceof Error)) {
             throw new Error("Error must be an instance of Error")
         }
-        return err(e.message)
+        return err(e)
     }
 }
 
-export let initImpl = ok => err => user => pass => 
-    catchAsString(ok, err, (async () => {
+export let authImpl = just => nothing => session => {
+    if (session.auth) {
+        return just(session.auth)
+    } else {
+        return nothing
+    }
+}
+
+export let logInImpl = ok => err => user => pass => 
+    catchP(ok, err, async () => {
         let session = new ScratchSession()
         await session.init(user, pass)
         return session
-    })())
+    })
 
 export let uploadToAssetsImpl = ok => err => buffer => fileExtension => session =>
-    catchAsString(ok, err, session.uploadToAssets(buffer, fileExtension))
+    catchP(ok, err, () => session.uploadToAssets(buffer, fileExtension))
 
-export let searchProjectsImpl = ok => err => query => limit => offset => mode => session =>
-    catchAsString(v => ok(v.map(objToCamelCase)), err, session.searchProjects(query, limit, offset, mode))
+export let searchProjectsImpl = ok => err => mode => offset => limit => query => session =>
+    catchP(v => ok(v.map(objToCamelCase)), err, () => session.searchProjects(query, limit, offset, mode))
 
-export let getMessagesImpl = tuple => ok => err => limit => offset => session =>
-    catchAsString(v => ok(v.map(i => tuple(i.type)(objToCamelCase(i)))), err, session.getMessages(limit, offset))
+export let messagesImpl = ok => err => offset => limit => session =>
+    catchP(v => ok(v.map(objToCamelCase)), err, () => session.getMessages(limit, offset))
 
 export let logoutImpl = ok => err => session =>
-    catchAsString(ok, err, structuredClone(session).logout())
+    catchP(ok, err, async () => {
+        let newSession = new ScratchSession()
+        newSession.auth = structuredClone(session.auth)
+        await newSession.logout()
+    })
