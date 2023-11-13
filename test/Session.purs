@@ -9,7 +9,7 @@ import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Effect.Console (log)
 import MeowClient.SearchProjectsMode as SPM
-import MeowClient.Session (logout, messages, searchProjects, uploadToAssets)
+import MeowClient.Session (logOut, messages, searchProjects, uploadToAssets)
 import MeowClient.Session as Session
 import Node.Buffer as Buffer
 import Partial.Unsafe (unsafeCrashWith)
@@ -18,37 +18,22 @@ import Test.Spec (Spec, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Utils (unsafeUnwrapResult)
 
-loggedInAndUsername :: Aff (Tuple Session.Value String)
-loggedInAndUsername = do
-    config <- Config.load
-    session <- Session.logIn config.username config.password
-    case session of
-        Left v -> unsafeCrashWith $ "Failed to log in: " <> show v
-        Right v -> pure $ Tuple v config.username
-
-loggedIn :: Aff Session.Value
-loggedIn = fst <$> loggedInAndUsername
-
-spec :: Spec Unit
-spec = do
+spec :: Session.Value -> Spec Unit
+spec session = do
     it "uploads to assets" do
-        session <- loggedIn
         buf <- liftEffect $ Buffer.alloc 10
         response <- uploadToAssets buf "txt" session
         liftEffect $ log response
 
     it "searches projects" do
-        let session = Session.anonymous
-        items <- unsafeUnwrapResult <$> searchProjects SPM.Popular 0 10 "" session
+        items <- unsafeUnwrapResult <$> searchProjects SPM.Popular 2 10 "hello" Session.anonymous
         Array.length items `shouldEqual` 10
 
     it "gets messages" do
-        session <- loggedIn
         items <- unsafeUnwrapResult <$> messages 0 10 session
         (Array.length items > 0) `shouldEqual` true
 
     it "logs out" do
-        session <- loggedIn
-        _ <- unsafeUnwrapResult <$> logout session
+        _ <- unsafeUnwrapResult <$> logOut session
         pure unit
         

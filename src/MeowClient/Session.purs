@@ -2,7 +2,7 @@ module MeowClient.Session
   ( Value
   , auth
   , logIn
-  , logout
+  , logOut
   , searchProjects
   , uploadToAssets
   , anonymous
@@ -12,7 +12,7 @@ module MeowClient.Session
 
 import Prelude
 
-import Data.Argonaut (Json)
+import Data.Argonaut (Json, encodeJson)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
@@ -48,17 +48,17 @@ foreign import uploadToAssetsImpl :: RightF -> LeftF -> Buffer -> String -> Valu
 uploadToAssets ∷ Buffer → String → Value → Aff String
 uploadToAssets b e v = toAffE $ uploadToAssetsImpl Right Left b e v
 
-foreign import searchProjectsImpl :: RightF -> LeftF -> SearchProjectsMode.Value -> Int -> Int -> String -> Value -> Effect (Promise (Either Error Json))
+foreign import searchProjectsImpl :: RightF -> LeftF -> Json -> Int -> Int -> String -> Value -> Effect (Promise (Either Error Json))
 
 searchProjects ∷ SearchProjectsMode.Value → Int → Int → String → Value → Aff (Either JsonOrJsError (Array SearchProjects.Value))
-searchProjects q l o m s = decodeJsErrorOrJson <$> (toAffE $ searchProjectsImpl Right Left q l o m s)
-    
+searchProjects m o l q v = decodeJsErrorOrJson <$> (toAffE $ searchProjectsImpl Right Left (encodeJson m) o l q v)
+
 foreign import messagesImpl :: RightF -> LeftF -> Int -> Int -> Value -> EffPromise (Either Error Json)
 
 messages :: Int -> Int -> Value -> Aff (Either JsonOrJsError.Value (Array Message.Value))
 messages l o v = toAffDecodeResult $ messagesImpl Right Left l o v
 
-foreign import logoutImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either String Unit))
+foreign import logOutImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either String Unit))
 
-logout :: Value -> Aff (Either String Unit)
-logout s = toAffE $ logoutImpl Right Left s
+logOut :: Value -> Aff (Either String Unit)
+logOut s = toAffE $ logOutImpl Right Left s

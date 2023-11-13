@@ -38,7 +38,7 @@ export let searchProjectsImpl = ok => err => mode => offset => limit => query =>
 export let messagesImpl = ok => err => offset => limit => session =>
     catchP(v => ok(v.map(objToCamelCase)), err, () => session.getMessages(limit, offset))
 
-export let logoutImpl = ok => err => session =>
+export let logOutImpl = ok => err => session =>
     catchP(ok, err, async () => {
         let newSession = new ScratchSession()
         newSession.auth = structuredClone(session.auth)

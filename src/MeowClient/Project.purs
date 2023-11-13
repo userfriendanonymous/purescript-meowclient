@@ -53,9 +53,9 @@ foreign import commentRepliesImpl :: RightF -> LeftF -> Int -> Int -> Int -> Val
 commentReplies :: Int -> Int -> Int -> Value -> Aff (Either JsonOrJsError (Array CommentReply.Value))
 commentReplies id o l v = decodeJsErrorOrJson <$> toAffE (commentRepliesImpl Right Left id o l v)
 
-foreign import commentImpl :: RightF -> LeftF -> String -> Int -> Int -> Value -> EffPromise (Either Error Unit)
+foreign import commentImpl :: RightF -> LeftF -> Int -> Int -> String -> Value -> EffPromise (Either Error Unit)
 
-comment :: String -> Int -> Int -> Value -> Aff (Either Error Unit)
+comment :: Int -> Int -> String -> Value -> Aff (Either Error Unit)
 comment c pi ci v = toAffE $ commentImpl Right Left c pi ci v
 
 foreign import setCommentingImpl :: RightF -> LeftF -> Boolean -> Value -> EffPromise (Either Error Unit)
