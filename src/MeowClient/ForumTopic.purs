@@ -32,10 +32,10 @@ foreign import infoImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error 
 info :: Value -> Aff (Either JsonOrJsError.Value Info.Value)
 info v = toAffDecodeResult $ infoImpl Right Left v
 
-foreign import postsImpl :: RightF -> LeftF -> TupleF -> Value -> EffPromise (Either Error (Array (Tuple Int PostInfo.Value)))
+foreign import postsImpl :: RightF -> LeftF -> TupleF -> Int -> Value -> EffPromise (Either Error (Array (Tuple Int PostInfo.Value)))
 
-posts :: Value -> Aff (Either Error (Array (Tuple Int PostInfo.Value)))
-posts v = toAffE $ postsImpl Right Left Tuple v
+posts :: Int -> Value -> Aff (Either Error (Array (Tuple Int PostInfo.Value)))
+posts page v = toAffE $ postsImpl Right Left Tuple page v
 
 foreign import replyImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Json)
 

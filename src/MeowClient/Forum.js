@@ -15,10 +15,8 @@ let catchP = (ok, err, f) => async () => {
 let toClass = value => new Forum(value.session, value.id)
 
 export let topicsImpl = ok => err => page => forum =>
-    catchP(v => ok(objToCamelCase(v)), err, () => toClass(forum).getTopics(page))
+    catchP(v => ok(v.map(o => objToCamelCase(o.data))), err, () => toClass(forum).getTopics(page))
 
-export let createTopicImpl = ok => err => title => body => forum =>
+export let createTopicImpl = ok => err => body => title => forum =>
     catchP(ok, err, () => toClass(forum).createTopic(title, body))
     
-export let setSignatureImpl = ok => err => content => forum =>
-    catchP(ok, err, () => toClass(forum).setSignature(content))

@@ -1,7 +1,6 @@
 module MeowClient.Forum
   ( Value
   , createTopic
-  , setSignature
   , topics
   )
   where
@@ -31,8 +30,3 @@ foreign import createTopicImpl :: RightF -> LeftF -> String -> String -> Value -
 
 createTopic :: String -> String -> Value -> Aff (Either JsonOrJsError Unit)
 createTopic t b v = toAffDecodeResult $ createTopicImpl Right Left t b v
-
-foreign import setSignatureImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Json)
-
-setSignature :: String -> Value -> Aff (Either JsonOrJsError Unit)
-setSignature c v = toAffDecodeResult $ setSignatureImpl Right Left c v

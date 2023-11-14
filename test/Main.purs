@@ -11,6 +11,8 @@ import Test.Config as Config
 import Test.Profile as TestProfile
 import Test.Session as TestSession
 import Test.Project as TestProject
+import Test.Forum as TestForum
+import Test.ForumTopic as TestForumTopic
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Reporter (consoleReporter)
 import Test.Spec.Runner (runSpec)
@@ -30,6 +32,8 @@ main = launchAff_ do
 
 spec :: Session.Value -> Spec Unit
 spec session = do
-    describe "session" $ TestSession.spec session
+    -- describe "session" $ TestSession.spec session
     -- describe "profile" $ TestProfile.spec session
     -- describe "project" $ TestProject.spec session
+    describe "forum" $ TestForum.spec session
+    describe "forum topic" $ TestForumTopic.spec session

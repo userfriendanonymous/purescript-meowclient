@@ -9,7 +9,7 @@ import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Effect.Console (log)
 import MeowClient.SearchProjectsMode as SPM
-import MeowClient.Session (logOut, messages, searchProjects, uploadToAssets)
+import MeowClient.Session (logOut, messages, searchProjects, setSignature, uploadToAssets)
 import MeowClient.Session as Session
 import Node.Buffer as Buffer
 import Partial.Unsafe (unsafeCrashWith)
@@ -37,3 +37,6 @@ spec session = do
         _ <- unsafeUnwrapResult <$> logOut session
         pure unit
         
+    it "sets signature" do
+        _ <- unsafeUnwrapResult <$> setSignature "Signature" session
+        pure unit

@@ -75,5 +75,11 @@ comments p v = decodeJsErrorOrJson <$> toAffE (commentsImpl Right Left p v)
 
 foreign import toggleCommentingImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either Error Unit))
 
+-- | ## Toggles profile commenting
+-- | *Requires authentication with the same username*
+-- | ### Example
+-- | ```
+-- | toggleCommenting { username : "yourUsername", session }
+-- | ```
 toggleCommenting :: Value -> Aff (Either Error Unit)
 toggleCommenting v = toAffE $ toggleCommentingImpl Right Left v

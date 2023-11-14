@@ -1,7 +1,9 @@
 module MeowClient.Forum.Topic where
 
+import Data.Maybe (Maybe)
+
 type Value =
-    { sticky :: Boolean
+    { sticky :: Maybe Boolean
     , title :: String
     , replyCount :: Int
     }

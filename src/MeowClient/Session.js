@@ -1,4 +1,4 @@
-import { ScratchSession } from 'meowclient'
+import { ScratchSession, Forum } from 'meowclient'
 import { objectKeysToCamelCaseV2 as objToCamelCase } from 'keys-converter'
 
 export let anonymous = new ScratchSession()
@@ -44,3 +44,6 @@ export let logOutImpl = ok => err => session =>
         newSession.auth = structuredClone(session.auth)
         await newSession.logout()
     })
+
+export let setSignatureImpl = ok => err => content => session =>
+    catchP(ok, err, () => new Forum(session, 0).setSignature(content))

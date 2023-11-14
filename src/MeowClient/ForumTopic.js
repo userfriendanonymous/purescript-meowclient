@@ -17,12 +17,12 @@ let toClass = value => new Topic(value.session, value.id)
 export let infoImpl = ok => err => topic =>
     catchP(v => ok(objToCamelCase(v)), err, async () => {
         let cl = toClass(topic)
-        cl.setData()
+        await cl.setData()
         return cl.data
     })
 
 export let postsImpl = ok => err => tuple => page => topic =>
-    catchP(v => ok(objToCamelCase(v)), err, async () => 
+    catchP(v => ok(v.map(objToCamelCase)), err, async () => 
         (await toClass(topic).getPosts(page))
             .map(v => tuple(v.id)(v.data))
     )

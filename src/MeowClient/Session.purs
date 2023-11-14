@@ -7,6 +7,7 @@ module MeowClient.Session
   , uploadToAssets
   , anonymous
   , messages
+  , setSignature
   )
   where
 
@@ -62,3 +63,8 @@ foreign import logOutImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either
 
 logOut :: Value -> Aff (Either String Unit)
 logOut s = toAffE $ logOutImpl Right Left s
+
+foreign import setSignatureImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Json)
+
+setSignature :: String -> Value -> Aff (Either JsonOrJsError Unit)
+setSignature c v = toAffDecodeResult $ setSignatureImpl Right Left c v
