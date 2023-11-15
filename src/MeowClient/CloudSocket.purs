@@ -1,4 +1,13 @@
-module MeowClient.CloudSocket where
+module MeowClient.CloudSocket
+  ( Value
+  , id
+  , init
+  , session
+  , setVar
+  , var
+  , close
+  )
+  where
 
 import Prelude
 
@@ -33,3 +42,8 @@ var n v = map
         Left _ -> Nothing
         Right o -> o
     ) <$> varImpl Right Left n v
+
+foreign import closeImpl :: RightF -> LeftF -> Value -> Effect (Either Error Unit)
+
+close :: Value -> Effect (Either Error Unit)
+close v = closeImpl Right Left v

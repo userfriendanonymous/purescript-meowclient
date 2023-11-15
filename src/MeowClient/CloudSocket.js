@@ -24,3 +24,6 @@ export let setVarImpl = ok => err => name => value => socket =>
 
 export let varImpl = ok => err => name => socket =>
     catch_(ok, err, () => socket.getVariable(name))
+
+export let closeImpl = ok => err => socket =>
+    catch_(ok, err, () => socket.close())

@@ -14,6 +14,7 @@ import Test.ForumPost as TestForumPost
 import Test.Profile as TestProfile
 import Test.Project as TestProject
 import Test.Session as TestSession
+import Test.CloudSocket as TestCloudSocket
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Reporter (consoleReporter)
 import Test.Spec.Runner (runSpec)
@@ -38,4 +39,5 @@ spec session = do
     -- describe "project" $ TestProject.spec session
     -- describe "forum" $ TestForum.spec session
     -- describe "forum topic" $ TestForumTopic.spec session
-    describe "forum post" $ TestForumPost.spec session
+    -- describe "forum post" $ TestForumPost.spec session
+    describe "cloud socket" $ TestCloudSocket.spec session
