@@ -22,7 +22,7 @@ spec session = do
         _ <- liftEffect $ unsafeUnwrapResult <$> setVar "1" "400" socket
         pure unit
 
-    it "gets var" do
+    it "gets var" do -- fails, obviously
         socket <- initSocket session
         value <- liftEffect $ unsafePartial fromJust <$> unsafeUnwrapResult <$> var "1" socket
         liftEffect $ log value

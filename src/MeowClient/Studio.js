@@ -48,17 +48,17 @@ export let addProjectImpl = ok => err => id => studio =>
 export let removeProjectImpl = ok => err => id => studio =>
     catchP(ok, err, () => toClass(studio).removeProject(id))
 
-export let commentImpl = ok => err => content => parentId => commenteeId => studio =>
+export let commentImpl = ok => err => commenteeId => parentId => content => studio =>
     catchP(ok, err, () => toClass(studio).comment(content, parentId, commenteeId))
 
 export let toggleCommentingImpl = ok => err => studio =>
     catchP(ok, err, () => toClass(studio).toggleComments())
 
-export let getCuratorsImpl = ok => err => limit => offset => studio =>
+export let getCuratorsImpl = ok => err => offset => limit => studio =>
     catchP(v => ok(v.map(objToCamelCase)), err, () => toClass(studio).getCurators(limit, offset))
 
-export let getManagersImpl = ok => err => limit => offset => studio =>
+export let getManagersImpl = ok => err => offset => limit => studio =>
     catchP(v => ok(v.map(objToCamelCase)), err, () => toClass(studio).getManagers(limit, offset))
 
-export let getProjectsImpl = ok => err => limit => offset => studio =>
+export let getProjectsImpl = ok => err => offset => limit => studio =>
     catchP(v => ok(v.map(objToCamelCase)), err, () => toClass(studio).getProjects(limit, offset))

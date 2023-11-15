@@ -40,6 +40,12 @@ type Value =
 
 foreign import apiImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
 
+-- | ## Gets API information
+-- | `api <Studio>`
+-- | ### Example
+-- | ```purescript
+-- | api { session, id : 34104548 }
+-- | ```
 api :: Value -> Aff (Either JsonOrJsError Api.Value)
 api v = toAffDecodeResult $ apiImpl Right Left v
 
@@ -93,9 +99,9 @@ foreign import removeProjectImpl :: RightF -> LeftF -> Int -> Value -> EffPromis
 removeProject :: Int -> Value -> Aff (Either JsonOrJsError Unit)
 removeProject i v = toAffDecodeResult $ removeProjectImpl Right Left i v
 
-foreign import commentImpl :: RightF -> LeftF -> String -> Int -> Int -> Value -> EffPromise (Either Error Json)
+foreign import commentImpl :: RightF -> LeftF -> Int -> Int -> String -> Value -> EffPromise (Either Error Json)
 
-comment :: String -> Int -> Int -> Value -> Aff (Either JsonOrJsError Unit)
+comment :: Int -> Int -> String -> Value -> Aff (Either JsonOrJsError Int)
 comment c pi ci v = toAffDecodeResult $ commentImpl Right Left c pi ci v
 
 foreign import toggleCommentingImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
