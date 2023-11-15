@@ -34,7 +34,7 @@ foreign import sourceImpl :: RightF -> LeftF -> Value -> EffPromise (Either Erro
 source :: Value -> Aff (Either Error String)
 source v = toAffE $ sourceImpl Right Left v
 
-foreign import editImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error String)
+foreign import editImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Unit)
 
-edit :: String -> Value -> Aff (Either Error String)
+edit :: String -> Value -> Aff (Either Error Unit)
 edit c v = toAffE $ editImpl Right Left c v

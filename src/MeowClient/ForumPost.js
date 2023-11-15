@@ -15,9 +15,9 @@ let catchP = (ok, err, f) => async () => {
 let toClass = value => new Post(value.session, value.id)
 
 export let infoImpl = ok => err => post =>
-    catchP(ok, err, () => {
+    catchP(ok, err, async () => {
         let cl = toClass(post)
-        cl.setData()
+        await cl.setData()
         return cl.data
     })
 
