@@ -33,6 +33,13 @@ import MeowClient.Utils (LeftF, RightF, EffPromise, decodeJsErrorOrJson)
 import Node.Buffer (Buffer)
 import Promise.Aff (toAffE)
 
+-- | Project pointer.
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    let project = { id : 874061786, session }
+-- |    result <- api project
+-- | ```
 type Value =
     { id :: Int
     , session :: Session.Value
@@ -40,21 +47,65 @@ type Value =
 
 foreign import apiImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
 
+-- | Gets api information for a project.
+-- | 
+-- | `api [project]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- api project
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right info -> -- ...
+-- | ```
 api :: Value -> Aff (Either JsonOrJsError Api.Value)
 api v = decodeJsErrorOrJson <$> toAffE (apiImpl Right Left v)
 
 foreign import commentsImpl :: RightF -> LeftF -> Int -> Int -> Value -> EffPromise (Either Error Json)
 
+-- | Gets comments of a project.
+-- | 
+-- | `comments [offset] [limit] [project]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- comments 0 20 project
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right arrayOfComments -> -- ...
+-- | ```
 comments :: Int -> Int -> Value -> Aff (Either JsonOrJsError (Array Comment.Value))
-comments o l v = decodeJsErrorOrJson <$> toAffE (commentsImpl Right Left o l v)
+comments offset limit v = decodeJsErrorOrJson <$> toAffE (commentsImpl Right Left offset limit v)
 
 foreign import commentRepliesImpl :: RightF -> LeftF -> Int -> Int -> Int -> Value -> EffPromise (Either Error Json)
 
+-- | Gets replies of a comment in a project.
+-- | 
+-- | `commentReplies [offset] [limit] [comment id] [project]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- commentReplies 0 20 43409410
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right replies -> -- ...
+-- | ```
 commentReplies :: Int -> Int -> Int -> Value -> Aff (Either JsonOrJsError (Array CommentReply.Value))
-commentReplies id o l v = decodeJsErrorOrJson <$> toAffE (commentRepliesImpl Right Left id o l v)
+commentReplies offset limit id v = decodeJsErrorOrJson <$> toAffE (commentRepliesImpl Right Left offset limit id v)
 
 foreign import commentImpl :: RightF -> LeftF -> Int -> Int -> String -> Value -> EffPromise (Either Error Unit)
 
+-- | Leaves a comment.
+-- | 
+-- | `comment [commentee id] [parent id] [content] [project]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- comment 0 0 "Hello!" project
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
 comment :: Int -> Int -> String -> Value -> Aff (Either Error Unit)
 comment c pi ci v = toAffE $ commentImpl Right Left c pi ci v
 

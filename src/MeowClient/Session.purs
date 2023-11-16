@@ -36,35 +36,118 @@ foreign import anonymous :: Value
 
 foreign import authImpl :: (forall a . a -> Maybe a) -> (forall a . Maybe a) -> Value -> Maybe Auth.Value
 
+-- | Extracts authentication information.
+-- | 
+-- | `auth [session]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    maybeInfo <- auth anonymous
+-- |    case maybeInfo of
+-- |        Just info -> -- ...
+-- |        Nothing -> -- ...
+-- | ```
 auth :: Value -> Maybe Auth.Value
 auth = authImpl Just Nothing
 
-foreign import logInImpl :: RightF -> LeftF -> String -> String -> Effect (Promise (Either String Value))
+foreign import logInImpl :: RightF -> LeftF -> String -> String -> Effect (Promise (Either Error Value))
 
-logIn ∷ String → String → Aff (Either String Value)
-logIn u p = toAffE $ logInImpl Right Left u p
+-- | Logs in with username and password.
+-- | 
+-- | `logIn [username] [password]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- logIn "username" "password"
+-- |    case result of
+-- |        Left err -> -- ...
+-- |        Right session -> -- ...
+-- | ```
+logIn ∷ String → String → Aff (Either Error Value)
+logIn username password = toAffE $ logInImpl Right Left username password
 
-foreign import uploadToAssetsImpl :: RightF -> LeftF -> Buffer -> String -> Value -> Effect (Promise String)
+foreign import uploadToAssetsImpl :: RightF -> LeftF -> Buffer -> String -> Value -> EffPromise (Either Error Json)
 
-uploadToAssets ∷ Buffer → String → Value → Aff String
-uploadToAssets b e v = toAffE $ uploadToAssetsImpl Right Left b e v
+-- | Uploads a file to <https://assets.scratch.mit.edu/>.
+-- |
+-- | This can be used for adding images to be used in a forum post or signature.
+-- |
+-- | `uploadToAssets [buffer] [file extension] [session]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- uploadToAssets buffer "txt" session
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right assetUrl -> -- ...
+-- | ```
+uploadToAssets ∷ Buffer → String → Value → Aff (Either JsonOrJsError.Value String)
+uploadToAssets buffer extension v = toAffDecodeResult $ uploadToAssetsImpl Right Left buffer extension v
 
 foreign import searchProjectsImpl :: RightF -> LeftF -> Json -> Int -> Int -> String -> Value -> Effect (Promise (Either Error Json))
 
+-- | Searches projects.
+-- |
+-- | `searchProjects [mode] [offset] [limit] [query string] [session]`
+-- | ### Example
+-- | ```purescript
+-- | import MeowClient.SearchProjectsMode as SPM
+-- | do
+-- |    result <- searchProjects SPM.Popular 0 20 "cat" session
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right projects -> -- ...
+-- | ```
 searchProjects ∷ SearchProjectsMode.Value → Int → Int → String → Value → Aff (Either JsonOrJsError (Array SearchProjects.Value))
-searchProjects m o l q v = decodeJsErrorOrJson <$> (toAffE $ searchProjectsImpl Right Left (encodeJson m) o l q v)
+searchProjects mode offset limit query v = decodeJsErrorOrJson <$> (toAffE $ searchProjectsImpl Right Left (encodeJson mode) offset limit query v)
 
 foreign import messagesImpl :: RightF -> LeftF -> Int -> Int -> Value -> EffPromise (Either Error Json)
 
+-- | Gets logged in user's messages.
+-- | 
+-- | `messages [offset] [limit] [session]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- messages 0 20 session
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right messages -> -- ...
+-- | ```
 messages :: Int -> Int -> Value -> Aff (Either JsonOrJsError.Value (Array Message.Value))
-messages l o v = toAffDecodeResult $ messagesImpl Right Left l o v
+messages offset limit v = toAffDecodeResult $ messagesImpl Right Left offset limit v
 
-foreign import logOutImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either String Unit))
+foreign import logOutImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either Error Unit))
 
-logOut :: Value -> Aff (Either String Unit)
-logOut s = toAffE $ logOutImpl Right Left s
+-- | Performs a log-out API call.
+-- | 
+-- | `logOut [session]`
+-- | ### Note
+-- | Session that's passed into this function, will not change.
+-- | If it was logged in, it will stay logged in even after it's passed into this function.
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- logOut session
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+logOut :: Value -> Aff (Either Error Unit)
+logOut v = toAffE $ logOutImpl Right Left v
 
 foreign import setSignatureImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Json)
 
+-- | Sets logged in user's forums signature.
+-- | 
+-- | `setSignature [content] [session]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- setSignature "My new signature!" session
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
 setSignature :: String -> Value -> Aff (Either JsonOrJsError Unit)
-setSignature c v = toAffDecodeResult $ setSignatureImpl Right Left c v
+setSignature content v = toAffDecodeResult $ setSignatureImpl Right Left content v
