@@ -1,6 +1,6 @@
 # MeowClient
 
-MeowClient JS library by @god286 ported to PureScript through FFI.
+[MeowClient JS library by @god286](https://github.com/webdev03/meowclient) ported to PureScript through FFI.
 
 ## Installation
 
@@ -86,6 +86,7 @@ cloud = do
 
 If you get stuck, there are several ways to get help:
 
+- Ask me on my [Scratch profile](https://scratch.mit.edu/users/SCRATCH---PIXEL/).
 - [Open an issue](https://github.com/purescript-contrib/purescript-meowclient/issues) if you have encountered a bug or problem.
 - Ask general questions on the [PureScript Discourse](https://discourse.purescript.org) forum or the [PureScript Discord](https://purescript.org/chat) chat.
 
