@@ -7,6 +7,7 @@ import Data.Either (Either(..))
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 
+-- | Visibility of a project or a studio.
 data Value
     = Visible
     | Hidden

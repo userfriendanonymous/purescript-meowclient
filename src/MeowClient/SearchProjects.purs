@@ -2,7 +2,8 @@ module MeowClient.SearchProjects where
 
 import Data.Maybe (Maybe)
 
-type Value =
+-- | Project information returned from searching projects.
+type Item =
     { id :: Number
     , title :: String
     , description :: String

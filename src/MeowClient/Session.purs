@@ -22,7 +22,7 @@ import Effect.Exception (Error)
 import MeowClient.JsonOrJsError as JsonOrJsError
 import MeowClient.Message as Message
 import MeowClient.SearchProjects as SearchProjects
-import MeowClient.SearchProjectsMode as SearchProjectsMode
+import MeowClient.SearchMode as SearchMode
 import MeowClient.Session.Auth as Auth
 import MeowClient.Utils (EffPromise, LeftF, RightF, decodeJsErrorOrJson, toAffDecodeResult)
 import Node.Buffer (Buffer)
@@ -91,14 +91,14 @@ foreign import searchProjectsImpl :: RightF -> LeftF -> Json -> Int -> Int -> St
 -- | `searchProjects [mode] [offset] [limit] [query string] [session]`
 -- | ### Example
 -- | ```purescript
--- | import MeowClient.SearchProjectsMode as SPM
+-- | import MeowClient.SearchMode as SearchMode
 -- | do
--- |    result <- searchProjects SPM.Popular 0 20 "cat" session
+-- |    result <- searchProjects SearchMode.Popular 0 20 "cat" session
 -- |    case result of
 -- |        Left error -> -- ...
 -- |        Right projects -> -- ...
 -- | ```
-searchProjects ∷ SearchProjectsMode.Value → Int → Int → String → Value → Aff (Either JsonOrJsError (Array SearchProjects.Value))
+searchProjects ∷ SearchMode.Value → Int → Int → String → Value → Aff (Either JsonOrJsError (Array SearchProjects.Item))
 searchProjects mode offset limit query v = decodeJsErrorOrJson <$> (toAffE $ searchProjectsImpl Right Left (encodeJson mode) offset limit query v)
 
 foreign import messagesImpl :: RightF -> LeftF -> Int -> Int -> Value -> EffPromise (Either Error Json)

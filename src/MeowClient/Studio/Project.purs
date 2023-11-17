@@ -1,5 +1,6 @@
 module MeowClient.Studio.Project where
 
+-- | Information of a project in a studio.
 type Value =
     { id :: Int
     , title :: String

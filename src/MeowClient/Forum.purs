@@ -1,5 +1,5 @@
 module MeowClient.Forum
-  ( Value
+  ( Pointer
   , createTopic
   , topics
   )
@@ -16,17 +16,46 @@ import MeowClient.Forum.Topic as Topic
 import MeowClient.Session as Session
 import MeowClient.Utils (EffPromise, LeftF, RightF, toAffDecodeResult)
 
-type Value =
+-- | Forum pointer.
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    let forum = { id : 31, session }
+-- |    result <- topics 1 forum
+-- | ```
+type Pointer =
     { session :: Session.Value
     , id :: Int
     }
 
-foreign import topicsImpl :: RightF -> LeftF -> Int -> Value -> EffPromise (Either Error Json)
+foreign import topicsImpl :: RightF -> LeftF -> Int -> Pointer -> EffPromise (Either Error Json)
 
-topics :: Int -> Value -> Aff (Either JsonOrJsError (Array Topic.Value))
-topics p v = toAffDecodeResult $ topicsImpl Right Left p v
+-- | Gets forum's topics.
+-- | 
+-- | `topics [page] [forum]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- topics 3 forum
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right topics' -> -- ...
+-- | ```
+topics :: Int -> Pointer -> Aff (Either JsonOrJsError (Array Topic.Value))
+topics page v = toAffDecodeResult $ topicsImpl Right Left page v
 
-foreign import createTopicImpl :: RightF -> LeftF -> String -> String -> Value -> EffPromise (Either Error Json)
+foreign import createTopicImpl :: RightF -> LeftF -> String -> String -> Pointer -> EffPromise (Either Error Json)
 
-createTopic :: String -> String -> Value -> Aff (Either JsonOrJsError Unit)
-createTopic t b v = toAffDecodeResult $ createTopicImpl Right Left t b v
+-- | Creates a topic in a forum.
+-- | 
+-- | `createTopic [body] [title] [forum]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- createTopic "Welcome to this topic" "Topic title" forum
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+createTopic :: String -> String -> Pointer -> Aff (Either JsonOrJsError Unit)
+createTopic body title v = toAffDecodeResult $ createTopicImpl Right Left body title v

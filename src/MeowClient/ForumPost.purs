@@ -1,5 +1,5 @@
 module MeowClient.ForumPost
-  ( Value
+  ( Pointer
   , edit
   , info
   , source
@@ -19,22 +19,62 @@ import Promise.Aff (toAffE)
 
 type JsonOrJsError = JsonOrJsError.Value
 
-type Value =
+-- | Forum post pointer.
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    let forumPost = { id : 415011012, session }
+-- |    result <- info forumPost
+-- | ```
+type Pointer =
     { session :: Session.Value
     , id :: Int
     }
 
-foreign import infoImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Info.Value)
+foreign import infoImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Info.Value)
 
-info :: Value -> Aff (Either Error Info.Value)
+-- | Gets information about a forum post.
+-- | 
+-- | `info [forum post]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- info forumPost
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right info' -> -- ...
+-- | ```
+info :: Pointer -> Aff (Either Error Info.Value)
 info v = toAffE $ infoImpl Right Left v
 
-foreign import sourceImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error String)
+foreign import sourceImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error String)
 
-source :: Value -> Aff (Either Error String)
+-- | Gets source of a forum post.
+-- | 
+-- | `source [forum post]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- source forumPost
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right source' -> -- ...
+-- | ```
+source :: Pointer -> Aff (Either Error String)
 source v = toAffE $ sourceImpl Right Left v
 
-foreign import editImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Unit)
+foreign import editImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Unit)
 
-edit :: String -> Value -> Aff (Either Error Unit)
-edit c v = toAffE $ editImpl Right Left c v
+-- | Edits a forum post.
+-- | 
+-- | `edit [new content] [forum post]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- edit "Edited!" forumPost
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+edit :: String -> Pointer -> Aff (Either Error Unit)
+edit content v = toAffE $ editImpl Right Left content v

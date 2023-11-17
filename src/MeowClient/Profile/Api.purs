@@ -1,5 +1,6 @@
 module MeowClient.Profile.Api where
 
+-- | User API information loaded from https://api.scratch.mit.edu/users/ID/.
 type Value =
     { id :: Int
     , username :: String

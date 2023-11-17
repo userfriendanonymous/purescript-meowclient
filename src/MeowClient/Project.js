@@ -23,7 +23,7 @@ export let commentsImpl = ok => err => offset => limit => project =>
 export let commentRepliesImpl = ok => err => offset => limit => id => project =>
     catchP(v => ok(v.map(objToCamelCase)), err, () => toClass(project).getCommentReplies(id, offset, limit))
 
-export let commentImpl = ok => err => commenteeId => parentId => content => project =>
+export let sendCommentImpl = ok => err => commenteeId => parentId => content => project =>
     catchP(ok, err, () => toClass(project).comment(content, parentId, commenteeId))
 
 export let setCommentingImpl = ok => err => allowed => project =>

@@ -1,13 +1,13 @@
 module MeowClient.Studio
-  ( Value
+  ( Pointer
   , acceptInvite
   , addProject
   , api
   , comment
   , follow
-  , getCurators
-  , getManagers
-  , getProjects
+  , curators
+  , managers
+  , projects
   , inviteCurator
   , myStatus
   , removeCurator
@@ -33,93 +33,270 @@ import MeowClient.Studio.MyStatus as MyStatus
 import MeowClient.Studio.Project as Project
 import MeowClient.Utils (RightF, LeftF, EffPromise, toAffDecodeResult)
 
-type Value =
+-- | Studio pointer.
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    let studio = { id : 34104548, session }
+-- |    result <- api studio
+-- | ```
+type Pointer =
     { session :: Session.Value
     , id :: Int
     }
 
-foreign import apiImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
+foreign import apiImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
--- | ## Gets API information
--- | `api <Studio>`
+-- | Gets API information.
+-- | 
+-- | `api [studio]`
 -- | ### Example
 -- | ```purescript
--- | api { session, id : 34104548 }
+-- | do
+-- |    result <- api { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right info -> -- ...
 -- | ```
-api :: Value -> Aff (Either JsonOrJsError Api.Value)
+api :: Pointer -> Aff (Either JsonOrJsError Api.Value)
 api v = toAffDecodeResult $ apiImpl Right Left v
 
-foreign import followImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
+foreign import followImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
-follow :: Value -> Aff (Either JsonOrJsError Unit)
+-- | Follows a studio.
+-- | 
+-- | `follow [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- follow { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+follow :: Pointer -> Aff (Either JsonOrJsError Unit)
 follow v = toAffDecodeResult $ followImpl Right Left v
 
-foreign import unfollowImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
+foreign import unfollowImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
-unfollow :: Value -> Aff (Either JsonOrJsError Unit)
+-- | Unfollows a studio.
+-- | 
+-- | `unfollow [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- unfollow { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+unfollow :: Pointer -> Aff (Either JsonOrJsError Unit)
 unfollow v = toAffDecodeResult $ followImpl Right Left v
 
-foreign import setTitleImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Json)
+foreign import setTitleImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Json)
 
-setTitle :: String -> Value -> Aff (Either JsonOrJsError Unit)
-setTitle s v = toAffDecodeResult $ setTitleImpl Right Left s v
+-- | Sets title of a studio.
+-- | 
+-- | `setTitle [content] [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- setTitle "New title" { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+setTitle :: String -> Pointer -> Aff (Either JsonOrJsError Unit)
+setTitle content v = toAffDecodeResult $ setTitleImpl Right Left content v
 
-foreign import setDescriptionImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Json)
+foreign import setDescriptionImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Json)
 
-setDescription :: String -> Value -> Aff (Either JsonOrJsError Unit)
-setDescription s v = toAffDecodeResult $ setDescriptionImpl Right Left s v
+-- | Sets description of a studio.
+-- | 
+-- | `setDescription [content] [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- setDescription "Welcome to the studio" { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+setDescription :: String -> Pointer -> Aff (Either JsonOrJsError Unit)
+setDescription content v = toAffDecodeResult $ setDescriptionImpl Right Left content v
 
-foreign import inviteCuratorImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Json)
+foreign import inviteCuratorImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Json)
 
-inviteCurator :: String -> Value -> Aff (Either JsonOrJsError Unit)
-inviteCurator s v = toAffDecodeResult $ inviteCuratorImpl Right Left s v
+-- | Invites a curator.
+-- | 
+-- | `inviteCurator [username] [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- inviteCurator "griffpatch" { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+inviteCurator :: String -> Pointer -> Aff (Either JsonOrJsError Unit)
+inviteCurator username v = toAffDecodeResult $ inviteCuratorImpl Right Left username v
 
-foreign import removeCuratorImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Json)
+foreign import removeCuratorImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Json)
 
-removeCurator :: String -> Value -> Aff (Either JsonOrJsError Unit)
-removeCurator s v = toAffDecodeResult $ removeCuratorImpl Right Left s v
+-- | Removes a curator.
+-- | 
+-- | `removeCurator [username] [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- removeCurator "griffpatch" { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+removeCurator :: String -> Pointer -> Aff (Either JsonOrJsError Unit)
+removeCurator username v = toAffDecodeResult $ removeCuratorImpl Right Left username v
 
-foreign import acceptInviteImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
+foreign import acceptInviteImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
-acceptInvite :: Value -> Aff (Either JsonOrJsError Unit)
+-- | Accepts an invite to curate a studio.
+-- | 
+-- | `acceptInvite [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- acceptInvite { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+acceptInvite :: Pointer -> Aff (Either JsonOrJsError Unit)
 acceptInvite v = toAffDecodeResult $ acceptInviteImpl Right Left v
 
-foreign import myStatusImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
+foreign import myStatusImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
-myStatus :: Value -> Aff (Either JsonOrJsError MyStatus.Value)
+-- | Gets logged in user's status in a studio.
+-- | 
+-- | `myStatus [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- myStatus { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right status -> -- ...
+-- | ```
+myStatus :: Pointer -> Aff (Either JsonOrJsError MyStatus.Value)
 myStatus v = toAffDecodeResult $ myStatusImpl Right Left v
 
-foreign import addProjectImpl :: RightF -> LeftF -> Int -> Value -> EffPromise (Either Error Json)
+foreign import addProjectImpl :: RightF -> LeftF -> Int -> Pointer -> EffPromise (Either Error Json)
 
-addProject :: Int -> Value -> Aff (Either JsonOrJsError Unit)
-addProject i v = toAffDecodeResult $ addProjectImpl Right Left i v
+-- | Adds a project to a studio.
+-- | 
+-- | `addProject [id] [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- addProject 912075221 { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+addProject :: Int -> Pointer -> Aff (Either JsonOrJsError Unit)
+addProject id v = toAffDecodeResult $ addProjectImpl Right Left id v
 
-foreign import removeProjectImpl :: RightF -> LeftF -> Int -> Value -> EffPromise (Either Error Json)
+foreign import removeProjectImpl :: RightF -> LeftF -> Int -> Pointer -> EffPromise (Either Error Json)
 
-removeProject :: Int -> Value -> Aff (Either JsonOrJsError Unit)
-removeProject i v = toAffDecodeResult $ removeProjectImpl Right Left i v
+-- | Removes a project from a studio.
+-- | 
+-- | `removeProject [id] [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- removeProject 912075221 { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+removeProject :: Int -> Pointer -> Aff (Either JsonOrJsError Unit)
+removeProject id v = toAffDecodeResult $ removeProjectImpl Right Left id v
 
-foreign import commentImpl :: RightF -> LeftF -> Int -> Int -> String -> Value -> EffPromise (Either Error Json)
+foreign import commentImpl :: RightF -> LeftF -> Int -> Int -> String -> Pointer -> EffPromise (Either Error Json)
 
-comment :: Int -> Int -> String -> Value -> Aff (Either JsonOrJsError Int)
-comment c pi ci v = toAffDecodeResult $ commentImpl Right Left c pi ci v
+-- | Leaves a comment on a studio.
+-- | 
+-- | `comment [commentee id] [parent id] [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- comment 0 0 { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right commentId -> -- ...
+-- | ```
+comment :: Int -> Int -> String -> Pointer -> Aff (Either JsonOrJsError Int)
+comment commenteeId parentId content v = toAffDecodeResult $ commentImpl Right Left commenteeId parentId content v
 
-foreign import toggleCommentingImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
+foreign import toggleCommentingImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
-toggleCommenting :: Value -> Aff (Either JsonOrJsError Unit)
+-- | Toggles studio commenting.
+-- | 
+-- | `toggleCommenting [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- toggleCommenting { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+toggleCommenting :: Pointer -> Aff (Either JsonOrJsError Unit)
 toggleCommenting v = toAffDecodeResult $ toggleCommentingImpl Right Left v
 
-foreign import getCuratorsImpl :: RightF -> LeftF -> Int -> Int -> Value -> EffPromise (Either Error Json)
+foreign import curatorsImpl :: RightF -> LeftF -> Int -> Int -> Pointer -> EffPromise (Either Error Json)
 
-getCurators :: Int -> Int -> Value -> Aff (Either JsonOrJsError (Array ProfileApi.Value))
-getCurators l o v = toAffDecodeResult $ getCuratorsImpl Right Left l o v
+-- | Gets studio's curators.
+-- | 
+-- | `curators [offset] [limit] [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- curators 0 20 { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right curators' -> -- ...
+-- | ```
+curators :: Int -> Int -> Pointer -> Aff (Either JsonOrJsError (Array ProfileApi.Value))
+curators offset limit v = toAffDecodeResult $ curatorsImpl Right Left offset limit v
 
-foreign import getManagersImpl :: RightF -> LeftF -> Int -> Int -> Value -> EffPromise (Either Error Json)
+foreign import managersImpl :: RightF -> LeftF -> Int -> Int -> Pointer -> EffPromise (Either Error Json)
 
-getManagers :: Int -> Int -> Value -> Aff (Either JsonOrJsError (Array ProfileApi.Value))
-getManagers l o v = toAffDecodeResult $ getManagersImpl Right Left l o v
+-- | Gets studio's managers.
+-- | 
+-- | `managers [offset] [limit] [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- managers 0 20 { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right managers' -> -- ...
+-- | ```
+managers :: Int -> Int -> Pointer -> Aff (Either JsonOrJsError (Array ProfileApi.Value))
+managers offset limit v = toAffDecodeResult $ managersImpl Right Left offset limit v
 
-foreign import getProjectsImpl :: RightF -> LeftF -> Int -> Int -> Value -> EffPromise (Either Error Json)
+foreign import projectsImpl :: RightF -> LeftF -> Int -> Int -> Pointer -> EffPromise (Either Error Json)
 
-getProjects :: Int -> Int -> Value -> Aff (Either JsonOrJsError (Array Project.Value))
-getProjects l o v = toAffDecodeResult $ getProjectsImpl Right Left l o v
+-- | Gets studio's projects.
+-- | 
+-- | `projects [offset] [limit] [studio]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- projects 0 20 { session, id : 34104548 }
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right projects' -> -- ...
+-- | ```
+projects :: Int -> Int -> Pointer -> Aff (Either JsonOrJsError (Array Project.Value))
+projects offset limit v = toAffDecodeResult $ projectsImpl Right Left offset limit v

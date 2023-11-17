@@ -1,4 +1,4 @@
-module MeowClient.SearchProjectsMode where
+module MeowClient.SearchMode where
 
 import Prelude
 

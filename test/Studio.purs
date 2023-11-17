@@ -5,7 +5,7 @@ import Prelude
 import Data.Array as Array
 import Data.Either (isLeft)
 import MeowClient (Session)
-import MeowClient.Studio (acceptInvite, addProject, api, comment, follow, getCurators, getManagers, getProjects, inviteCurator, myStatus, removeCurator, removeProject, setDescription, setTitle, toggleCommenting, unfollow)
+import MeowClient.Studio (acceptInvite, addProject, api, comment, follow, curators, managers, projects, inviteCurator, myStatus, removeCurator, removeProject, setDescription, setTitle, toggleCommenting, unfollow)
 import Test.Spec (Spec, it)
 import Test.Spec.Assertions (shouldEqual, shouldSatisfy)
 import Test.Utils (unsafeUnwrapResult)
@@ -57,13 +57,13 @@ spec session = do
         unsafeUnwrapResult <$> toggleCommenting { session, id : 33429796 }
 
     it "gets curators" do
-        items <- unsafeUnwrapResult <$> getCurators 10 20 { session, id : 34104548 }
+        items <- unsafeUnwrapResult <$> curators 10 20 { session, id : 34104548 }
         Array.length items `shouldEqual` 20
 
     it "gets managers" do
-        items <- unsafeUnwrapResult <$> getManagers 0 4 { session, id : 34104548 }
+        items <- unsafeUnwrapResult <$> managers 0 4 { session, id : 34104548 }
         Array.length items `shouldEqual` 4
 
     it "gets projects" do
-        items <- unsafeUnwrapResult <$> getProjects 2 9 { session, id : 34104548 }
+        items <- unsafeUnwrapResult <$> projects 2 9 { session, id : 34104548 }
         Array.length items `shouldEqual` 9

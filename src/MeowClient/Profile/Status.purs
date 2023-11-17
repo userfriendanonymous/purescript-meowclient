@@ -7,6 +7,7 @@ import Data.Either (Either(..))
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 
+-- | User's status.
 data Value 
     = Scratcher
     | NewScratcher

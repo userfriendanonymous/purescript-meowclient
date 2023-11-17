@@ -1,7 +1,7 @@
 module MeowClient.Profile
-  ( Value
+  ( Pointer
   , api
-  , comment
+  , sendComment
   , comments
   , deleteComment
   , follow
@@ -29,14 +29,18 @@ import Promise (Promise)
 import Promise.Aff (toAffE)
 
 -- | Profile pointer.
--- |
 -- | ### Example
-type Value =
+-- | ```purescript
+-- | do
+-- |    let profile = { username : "griffpatch", session }
+-- |    result <- api profile
+-- | ```
+type Pointer =
     { username :: String
     , session :: Session.Value
     }
 
-foreign import statusImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either Error Json))
+foreign import statusImpl :: RightF -> LeftF -> Pointer -> Effect (Promise (Either Error Json))
 
 -- | Gets profile status (scratcher / new scratcher / scratch team).
 -- | 
@@ -49,10 +53,10 @@ foreign import statusImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either
 -- |        Left error -> -- ...
 -- |        Right status -> -- ...
 -- | ```
-status :: Value -> Aff (Either JsonOrJsError Status.Value)
+status :: Pointer -> Aff (Either JsonOrJsError Status.Value)
 status v = decodeJsErrorOrJson <$> (toAffE $ statusImpl Right Left v)
 
-foreign import followImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either Error Unit))
+foreign import followImpl :: RightF -> LeftF -> Pointer -> Effect (Promise (Either Error Unit))
 
 -- | Follow a user.
 -- | 
@@ -65,10 +69,10 @@ foreign import followImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-follow :: Value -> Aff (Either Error Unit)
+follow :: Pointer -> Aff (Either Error Unit)
 follow v = toAffE $ followImpl Right Left v
 
-foreign import unfollowImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either Error Unit))
+foreign import unfollowImpl :: RightF -> LeftF -> Pointer -> Effect (Promise (Either Error Unit))
 
 -- | Unfollows a user.
 -- | 
@@ -81,26 +85,26 @@ foreign import unfollowImpl :: RightF -> LeftF -> Value -> Effect (Promise (Eith
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-unfollow :: Value -> Aff (Either Error Unit)
+unfollow :: Pointer -> Aff (Either Error Unit)
 unfollow v = toAffE $ unfollowImpl Right Left v
 
-foreign import commentImpl :: RightF -> LeftF -> Int -> Int -> String -> Value -> Effect (Promise (Either Error Unit))
+foreign import sendCommentImpl :: RightF -> LeftF -> Int -> Int -> String -> Pointer -> Effect (Promise (Either Error Unit))
 
 -- | Leaves a comment on a profile.
 -- | 
--- | `comment [commentee id] [parent id] [content] [profile]`
+-- | `sendComment [commentee id] [parent id] [content] [profile]`
 -- | ### Example
 -- | ```purescript
 -- | do
--- |    result <- comment 0 0 "Hello!" profile
+-- |    result <- sendComment 0 0 "Hello!" profile
 -- |    case result of
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-comment :: Int -> Int -> String -> Value -> Aff (Either Error Unit)
-comment commenteeId parentId content v = toAffE $ commentImpl Right Left commenteeId parentId content v
+sendComment :: Int -> Int -> String -> Pointer -> Aff (Either Error Unit)
+sendComment commenteeId parentId content v = toAffE $ sendCommentImpl Right Left commenteeId parentId content v
 
-foreign import deleteCommentImpl :: RightF -> LeftF -> Int -> Value -> Effect (Promise (Either Error Unit))
+foreign import deleteCommentImpl :: RightF -> LeftF -> Int -> Pointer -> Effect (Promise (Either Error Unit))
 
 -- | Deletes a comment on a profile.
 -- | 
@@ -113,10 +117,10 @@ foreign import deleteCommentImpl :: RightF -> LeftF -> Int -> Value -> Effect (P
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-deleteComment :: Int -> Value -> Aff (Either Error Unit)
+deleteComment :: Int -> Pointer -> Aff (Either Error Unit)
 deleteComment id v = toAffE $ deleteCommentImpl Right Left id v
 
-foreign import apiImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either Error Json))
+foreign import apiImpl :: RightF -> LeftF -> Pointer -> Effect (Promise (Either Error Json))
 
 -- | Gets api information of a profile.
 -- | 
@@ -129,10 +133,10 @@ foreign import apiImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either Er
 -- |        Left error -> -- ...
 -- |        Right info -> -- ...
 -- | ```
-api :: Value -> Aff (Either JsonOrJsError Api.Value)
+api :: Pointer -> Aff (Either JsonOrJsError Api.Value)
 api v = decodeJsErrorOrJson <$> toAffE (apiImpl Right Left v)
 
-foreign import messagesCountImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either Error Json))
+foreign import messagesCountImpl :: RightF -> LeftF -> Pointer -> Effect (Promise (Either Error Json))
 
 -- | Gets messages' count of a user.
 -- | 
@@ -145,10 +149,10 @@ foreign import messagesCountImpl :: RightF -> LeftF -> Value -> Effect (Promise 
 -- |        Left error -> -- ...
 -- |        Right count -> -- ...
 -- | ```
-messagesCount :: Value -> Aff (Either JsonOrJsError Int)
+messagesCount :: Pointer -> Aff (Either JsonOrJsError Int)
 messagesCount v = decodeJsErrorOrJson <$> toAffE (messagesCountImpl Right Left v)
 
-foreign import commentsImpl :: RightF -> LeftF -> Int -> Value -> Effect (Promise (Either Error Json))
+foreign import commentsImpl :: RightF -> LeftF -> Int -> Pointer -> Effect (Promise (Either Error Json))
 
 -- | Gets comments on a profile.
 -- | 
@@ -161,10 +165,10 @@ foreign import commentsImpl :: RightF -> LeftF -> Int -> Value -> Effect (Promis
 -- |        Left error -> -- ...
 -- |        Right comments' -> -- ...
 -- | ```
-comments :: Int -> Value -> Aff (Either JsonOrJsError (Array Comment.Value))
+comments :: Int -> Pointer -> Aff (Either JsonOrJsError (Array Comment.Value))
 comments page v = decodeJsErrorOrJson <$> toAffE (commentsImpl Right Left page v)
 
-foreign import toggleCommentingImpl :: RightF -> LeftF -> Value -> Effect (Promise (Either Error Unit))
+foreign import toggleCommentingImpl :: RightF -> LeftF -> Pointer -> Effect (Promise (Either Error Unit))
 
 -- | Toggles profile commenting.
 -- | 
@@ -177,5 +181,5 @@ foreign import toggleCommentingImpl :: RightF -> LeftF -> Value -> Effect (Promi
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-toggleCommenting :: Value -> Aff (Either Error Unit)
+toggleCommenting :: Pointer -> Aff (Either Error Unit)
 toggleCommenting v = toAffE $ toggleCommentingImpl Right Left v

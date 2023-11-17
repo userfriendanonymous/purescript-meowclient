@@ -7,6 +7,7 @@ import Data.Either (Either(..))
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 
+-- | Represents a message that users receive in their inbox.
 data Value = Value Info Variant
 
 instance Show Value where
@@ -29,6 +30,7 @@ instance DecodeJson Value where
         info <- decodeJson j
         pure $ Value info variant
 
+-- | Type of a message with data.
 data Variant
     = StudioActivity StudioActivity
     | ForumPost ForumPost
@@ -44,6 +46,7 @@ derive instance Generic Variant _
 instance Show Variant where
     show = genericShow
 
+-- | General information about a message (independent of the message's type).
 type Info =
     { id :: Number
     , datetimeCreated :: String

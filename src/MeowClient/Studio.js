@@ -54,11 +54,11 @@ export let commentImpl = ok => err => commenteeId => parentId => content => stud
 export let toggleCommentingImpl = ok => err => studio =>
     catchP(ok, err, () => toClass(studio).toggleComments())
 
-export let getCuratorsImpl = ok => err => offset => limit => studio =>
+export let curatorsImpl = ok => err => offset => limit => studio =>
     catchP(v => ok(v.map(objToCamelCase)), err, () => toClass(studio).getCurators(limit, offset))
 
-export let getManagersImpl = ok => err => offset => limit => studio =>
+export let managersImpl = ok => err => offset => limit => studio =>
     catchP(v => ok(v.map(objToCamelCase)), err, () => toClass(studio).getManagers(limit, offset))
 
-export let getProjectsImpl = ok => err => offset => limit => studio =>
+export let projectsImpl = ok => err => offset => limit => studio =>
     catchP(v => ok(v.map(objToCamelCase)), err, () => toClass(studio).getProjects(limit, offset))

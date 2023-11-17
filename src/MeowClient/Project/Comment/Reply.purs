@@ -2,6 +2,7 @@ module MeowClient.Project.Comment.Reply where
 
 import MeowClient.Visibility as Visibility
 
+-- | Reply of a comment on a project.
 type Value =
     { id :: Int
     , parentId :: Int

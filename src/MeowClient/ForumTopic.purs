@@ -1,5 +1,5 @@
 module MeowClient.ForumTopic
-  ( Value
+  ( Pointer
   , follow
   , info
   , posts
@@ -22,32 +22,94 @@ import MeowClient.JsonOrJsError as JsonOrJsError
 import MeowClient.Utils (EffPromise, LeftF, RightF, TupleF, toAffDecodeResult)
 import Promise.Aff (toAffE)
 
-type Value =
+-- | Forum topic pointer.
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    let forumTopic = { id : 305901553, session }
+-- |    result <- info forumTopic
+-- | ```
+type Pointer =
     { session :: Session.Value
     , id :: Int
     }
 
-foreign import infoImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
+foreign import infoImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
-info :: Value -> Aff (Either JsonOrJsError.Value Info.Value)
+-- | Gets information about a forum topic.
+-- | 
+-- | `info [forum topic]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- info forumTopic
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right info' -> -- ...
+-- | ```
+info :: Pointer -> Aff (Either JsonOrJsError.Value Info.Value)
 info v = toAffDecodeResult $ infoImpl Right Left v
 
-foreign import postsImpl :: RightF -> LeftF -> TupleF -> Int -> Value -> EffPromise (Either Error (Array (Tuple Int PostInfo.Value)))
+foreign import postsImpl :: RightF -> LeftF -> TupleF -> Int -> Pointer -> EffPromise (Either Error (Array (Tuple Int PostInfo.Value)))
 
-posts :: Int -> Value -> Aff (Either Error (Array (Tuple Int PostInfo.Value)))
+-- | Gets posts of a forum topic.
+-- | 
+-- | `posts [page] [forum topic]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- posts 2 forumTopic
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right posts' -> -- ...
+-- | ```
+posts :: Int -> Pointer -> Aff (Either Error (Array (Tuple Int PostInfo.Value)))
 posts page v = toAffE $ postsImpl Right Left Tuple page v
 
-foreign import replyImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Json)
+foreign import replyImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Json)
 
-reply :: String -> Value -> Aff (Either JsonOrJsError.Value Unit)
-reply c v = toAffDecodeResult $ replyImpl Right Left c v
+-- | Leaves a reply on a forum topic.
+-- | 
+-- | `reply [content] [forum topic]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- reply "Hello everyone" forumTopic
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+reply :: String -> Pointer -> Aff (Either JsonOrJsError.Value Unit)
+reply content v = toAffDecodeResult $ replyImpl Right Left content v
 
-foreign import followImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
+foreign import followImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
-follow :: Value -> Aff (Either JsonOrJsError.Value Unit)
+-- | Follows a forum topic.
+-- | 
+-- | `follow [forum topic]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- follow forumTopic
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+follow :: Pointer -> Aff (Either JsonOrJsError.Value Unit)
 follow v = toAffDecodeResult $ followImpl Right Left v
 
-foreign import unfollowImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
+foreign import unfollowImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
-unfollow :: Value -> Aff (Either JsonOrJsError.Value Unit)
+-- | Unfollows a forum topic.
+-- | 
+-- | `unfollow [forum topic]`
+-- | ### Example
+-- | ```purescript
+-- | do
+-- |    result <- unfollow forumTopic
+-- |    case result of
+-- |        Left error -> -- ...
+-- |        Right _ -> -- ...
+-- | ```
+unfollow :: Pointer -> Aff (Either JsonOrJsError.Value Unit)
 unfollow v = toAffDecodeResult $ unfollowImpl Right Left v

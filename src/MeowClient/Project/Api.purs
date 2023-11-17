@@ -2,6 +2,7 @@ module MeowClient.Project.Api where
 
 import Data.Maybe (Maybe)
 
+-- | Project API information loaded from https://api.scratch.mit.edu/projects/ID/.
 type Value =
     { id :: Int
     , title :: String

@@ -2,6 +2,7 @@ module MeowClient.Project.Comment where
 
 import MeowClient.Visibility as Visibility
 
+-- | Comment on a project.
 type Value =
     { id :: Int
     , content :: String

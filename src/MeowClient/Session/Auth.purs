@@ -1,5 +1,6 @@
 module MeowClient.Session.Auth where
 
+-- | Authentication information.
 type Value =
     { username :: String
     , csrfToken :: String

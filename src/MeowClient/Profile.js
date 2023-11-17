@@ -23,7 +23,7 @@ export let followImpl = ok => err => profile =>
 export let unfollowImpl = ok => err => profile =>
     catchP(ok, err, () => toClass(profile).unfollow())
 
-export let commentImpl = ok => err => commenteeId => parentId => content => profile =>
+export let sendCommentImpl = ok => err => commenteeId => parentId => content => profile =>
     catchP(ok, err, () => toClass(profile).comment(content, parentId, commenteeId))
     
 export let deleteCommentImpl = ok => err => id => profile =>

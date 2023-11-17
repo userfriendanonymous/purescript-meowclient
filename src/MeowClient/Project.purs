@@ -1,7 +1,7 @@
 module MeowClient.Project
-  ( Value
+  ( Pointer
   , api
-  , comment
+  , sendComment
   , commentReplies
   , comments
   , isFavoriting
@@ -40,12 +40,12 @@ import Promise.Aff (toAffE)
 -- |    let project = { id : 874061786, session }
 -- |    result <- api project
 -- | ```
-type Value =
+type Pointer =
     { id :: Int
     , session :: Session.Value
     }
 
-foreign import apiImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
+foreign import apiImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
 -- | Gets api information for a project.
 -- | 
@@ -58,10 +58,10 @@ foreign import apiImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error J
 -- |        Left error -> -- ...
 -- |        Right info -> -- ...
 -- | ```
-api :: Value -> Aff (Either JsonOrJsError Api.Value)
+api :: Pointer -> Aff (Either JsonOrJsError Api.Value)
 api v = decodeJsErrorOrJson <$> toAffE (apiImpl Right Left v)
 
-foreign import commentsImpl :: RightF -> LeftF -> Int -> Int -> Value -> EffPromise (Either Error Json)
+foreign import commentsImpl :: RightF -> LeftF -> Int -> Int -> Pointer -> EffPromise (Either Error Json)
 
 -- | Gets comments of a project.
 -- | 
@@ -74,10 +74,10 @@ foreign import commentsImpl :: RightF -> LeftF -> Int -> Int -> Value -> EffProm
 -- |        Left error -> -- ...
 -- |        Right arrayOfComments -> -- ...
 -- | ```
-comments :: Int -> Int -> Value -> Aff (Either JsonOrJsError (Array Comment.Value))
+comments :: Int -> Int -> Pointer -> Aff (Either JsonOrJsError (Array Comment.Value))
 comments offset limit v = decodeJsErrorOrJson <$> toAffE (commentsImpl Right Left offset limit v)
 
-foreign import commentRepliesImpl :: RightF -> LeftF -> Int -> Int -> Int -> Value -> EffPromise (Either Error Json)
+foreign import commentRepliesImpl :: RightF -> LeftF -> Int -> Int -> Int -> Pointer -> EffPromise (Either Error Json)
 
 -- | Gets replies of a comment in a project.
 -- | 
@@ -90,26 +90,26 @@ foreign import commentRepliesImpl :: RightF -> LeftF -> Int -> Int -> Int -> Val
 -- |        Left error -> -- ...
 -- |        Right replies -> -- ...
 -- | ```
-commentReplies :: Int -> Int -> Int -> Value -> Aff (Either JsonOrJsError (Array CommentReply.Value))
+commentReplies :: Int -> Int -> Int -> Pointer -> Aff (Either JsonOrJsError (Array CommentReply.Value))
 commentReplies offset limit id v = decodeJsErrorOrJson <$> toAffE (commentRepliesImpl Right Left offset limit id v)
 
-foreign import commentImpl :: RightF -> LeftF -> Int -> Int -> String -> Value -> EffPromise (Either Error Unit)
+foreign import sendCommentImpl :: RightF -> LeftF -> Int -> Int -> String -> Pointer -> EffPromise (Either Error Unit)
 
 -- | Leaves a comment on a project.
 -- | 
--- | `comment [commentee id] [parent id] [content] [project]`
+-- | `sendComment [commentee id] [parent id] [content] [project]`
 -- | ### Example
 -- | ```purescript
 -- | do
--- |    result <- comment 0 0 "Hello!" project
+-- |    result <- sendComment 0 0 "Hello!" project
 -- |    case result of
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-comment :: Int -> Int -> String -> Value -> Aff (Either Error Unit)
-comment commenteeId parentId content v = toAffE $ commentImpl Right Left commenteeId parentId content v
+sendComment :: Int -> Int -> String -> Pointer -> Aff (Either Error Unit)
+sendComment commenteeId parentId content v = toAffE $ sendCommentImpl Right Left commenteeId parentId content v
 
-foreign import setCommentingImpl :: RightF -> LeftF -> Boolean -> Value -> EffPromise (Either Error Unit)
+foreign import setCommentingImpl :: RightF -> LeftF -> Boolean -> Pointer -> EffPromise (Either Error Unit)
 
 -- | Sets commenting of a project (open or closed).
 -- | 
@@ -122,10 +122,10 @@ foreign import setCommentingImpl :: RightF -> LeftF -> Boolean -> Value -> EffPr
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-setCommenting :: Boolean -> Value -> Aff (Either Error Unit)
+setCommenting :: Boolean -> Pointer -> Aff (Either Error Unit)
 setCommenting isOpen v = toAffE $ setCommentingImpl Right Left isOpen v
 
-foreign import setTitleImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Unit)
+foreign import setTitleImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Unit)
 
 -- | Sets title of a project.
 -- | 
@@ -138,10 +138,10 @@ foreign import setTitleImpl :: RightF -> LeftF -> String -> Value -> EffPromise 
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-setTitle :: String -> Value -> Aff (Either Error Unit)
+setTitle :: String -> Pointer -> Aff (Either Error Unit)
 setTitle content v = toAffE $ setTitleImpl Right Left content v
 
-foreign import setInstructionsImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Unit)
+foreign import setInstructionsImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Unit)
 
 -- | Sets instructions of a project.
 -- | 
@@ -154,10 +154,10 @@ foreign import setInstructionsImpl :: RightF -> LeftF -> String -> Value -> EffP
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-setInstructions :: String -> Value -> Aff (Either Error Unit)
+setInstructions :: String -> Pointer -> Aff (Either Error Unit)
 setInstructions content v = toAffE $ setInstructionsImpl Right Left content v
 
-foreign import setNotesAndCreditsImpl :: RightF -> LeftF -> String -> Value -> EffPromise (Either Error Unit)
+foreign import setNotesAndCreditsImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Unit)
 
 -- | Sets "Notes and Credits" of a project.
 -- | 
@@ -170,10 +170,10 @@ foreign import setNotesAndCreditsImpl :: RightF -> LeftF -> String -> Value -> E
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-setNotesAndCredits :: String -> Value -> Aff (Either Error Unit)
+setNotesAndCredits :: String -> Pointer -> Aff (Either Error Unit)
 setNotesAndCredits content v = toAffE $ setNotesAndCreditsImpl Right Left content v
 
-foreign import setThumbnailImpl :: RightF -> LeftF -> Buffer -> Value -> EffPromise (Either Error Unit)
+foreign import setThumbnailImpl :: RightF -> LeftF -> Buffer -> Pointer -> EffPromise (Either Error Unit)
 
 -- | Sets thumbnail of a project.
 -- |
@@ -186,10 +186,10 @@ foreign import setThumbnailImpl :: RightF -> LeftF -> Buffer -> Value -> EffProm
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-setThumbnail :: Buffer -> Value -> Aff (Either Error Unit)
+setThumbnail :: Buffer -> Pointer -> Aff (Either Error Unit)
 setThumbnail buffer v = toAffE $ setThumbnailImpl Right Left buffer v
 
-foreign import shareImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Unit)
+foreign import shareImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Unit)
 
 -- | Shares a project.
 -- |
@@ -202,10 +202,10 @@ foreign import shareImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-share :: Value -> Aff (Either Error Unit)
+share :: Pointer -> Aff (Either Error Unit)
 share v = toAffE $ shareImpl Right Left v
 
-foreign import unshareImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Unit)
+foreign import unshareImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Unit)
 
 -- | Unshares a project.
 -- |
@@ -218,10 +218,10 @@ foreign import unshareImpl :: RightF -> LeftF -> Value -> EffPromise (Either Err
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-unshare :: Value -> Aff (Either Error Unit)
+unshare :: Pointer -> Aff (Either Error Unit)
 unshare v = toAffE $ unshareImpl Right Left v
 
-foreign import isLovingImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
+foreign import isLovingImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
 -- | Checks whether logged in user is loving a project.
 -- |
@@ -234,10 +234,10 @@ foreign import isLovingImpl :: RightF -> LeftF -> Value -> EffPromise (Either Er
 -- |        Left error -> -- ...
 -- |        Right isLoving' -> -- ...
 -- | ```
-isLoving :: Value -> Aff (Either JsonOrJsError Boolean)
+isLoving :: Pointer -> Aff (Either JsonOrJsError Boolean)
 isLoving v = decodeJsErrorOrJson <$> toAffE (isLovingImpl Right Left v)
 
-foreign import isFavoritingImpl :: RightF -> LeftF -> Value -> EffPromise (Either Error Json)
+foreign import isFavoritingImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
 -- | Checks whether logged in user is favoriting a project.
 -- |
@@ -250,10 +250,10 @@ foreign import isFavoritingImpl :: RightF -> LeftF -> Value -> EffPromise (Eithe
 -- |        Left error -> -- ...
 -- |        Right isFavoriting' -> -- ...
 -- | ```
-isFavoriting :: Value -> Aff (Either JsonOrJsError Boolean)
+isFavoriting :: Pointer -> Aff (Either JsonOrJsError Boolean)
 isFavoriting v = decodeJsErrorOrJson <$> toAffE (isFavoritingImpl Right Left v)
 
-foreign import setLovingImpl :: RightF -> LeftF -> Boolean -> Value -> EffPromise (Either Error Unit)
+foreign import setLovingImpl :: RightF -> LeftF -> Boolean -> Pointer -> EffPromise (Either Error Unit)
 
 -- | Loves/unloves a project.
 -- |
@@ -266,10 +266,10 @@ foreign import setLovingImpl :: RightF -> LeftF -> Boolean -> Value -> EffPromis
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-setLoving :: Boolean -> Value -> Aff (Either Error Unit)
+setLoving :: Boolean -> Pointer -> Aff (Either Error Unit)
 setLoving state v = toAffE $ setLovingImpl Right Left state v
 
-foreign import setFavoritingImpl :: RightF -> LeftF -> Boolean -> Value -> EffPromise (Either Error Unit)
+foreign import setFavoritingImpl :: RightF -> LeftF -> Boolean -> Pointer -> EffPromise (Either Error Unit)
 
 -- | Favorites/unfavorites a project.
 -- |
@@ -282,5 +282,5 @@ foreign import setFavoritingImpl :: RightF -> LeftF -> Boolean -> Value -> EffPr
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-setFavoriting :: Boolean -> Value -> Aff (Either Error Unit)
+setFavoriting :: Boolean -> Pointer -> Aff (Either Error Unit)
 setFavoriting state v = toAffE $ setFavoritingImpl Right Left state v
