@@ -2,6 +2,10 @@
 
 [MeowClient JS library by @god286](https://github.com/webdev03/meowclient) ported to PureScript through FFI.
 
+Some function and type names where changed from the JS version, for example `getAPIData` was changed to `api`.
+
+There might be a small amount of broken features, but majority of the features are tested.
+
 ## Installation
 
 Install `meowclient` with [Spago](https://github.com/purescript/spago):
