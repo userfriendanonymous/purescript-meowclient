@@ -28,6 +28,7 @@ import MeowClient.Project (favorite, love)
 import MeowClient.Project as Project
 import MeowClient.Session (logIn)
 
+-- Some interactions with users and projects
 actions ∷ Aff Unit
 actions = do
     result <- logIn "Username" "Password"
@@ -48,26 +49,21 @@ actions = do
 
             pure unit
             
-
+-- Cloud data interactions
 cloud ∷ Aff Unit
 cloud = do
     result <- logIn "Username" "Password"
     case result of
         Left error -> log $ "error logging in: " <> show error
-
+        -- Connect
         Right session -> liftEffect $ Cloud.init 60917032 session >>= case _ of
-
             Left error -> log $ "error connecting to cloud: " <> show error
 
             Right socket -> do
-
                 -- Get a cloud variable
                 liftEffect $ Cloud.var "CLOUD1" socket >>= case _ of
-
                     Left error -> log $ "error getting a cloud variable: " <> show error
-
                     Right (Just value) -> log $ "variable CLOUD1 has value: " <> value
-
                     Right Nothing -> log $ "variable not found!"
 
                 -- Set a cloud variable
