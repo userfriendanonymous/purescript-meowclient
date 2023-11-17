@@ -1,13 +1,14 @@
 module MeowClient.Session
-  ( Value
+  ( Auth
+  , Value
+  , anonymous
   , auth
   , logIn
   , logOut
-  , searchProjects
-  , uploadToAssets
-  , anonymous
   , messages
+  , searchProjects
   , setSignature
+  , uploadToAssets
   )
   where
 
@@ -21,12 +22,14 @@ import Effect.Aff (Aff)
 import Effect.Exception (Error)
 import MeowClient.JsonOrJsError as JsonOrJsError
 import MeowClient.Message as Message
-import MeowClient.SearchProjects as SearchProjects
 import MeowClient.SearchMode as SearchMode
+import MeowClient.SearchProjects as SearchProjects
 import MeowClient.Session.Auth as Auth
 import MeowClient.Utils (EffPromise, LeftF, RightF, decodeJsErrorOrJson, toAffDecodeResult)
 import Node.Buffer (Buffer)
 import Promise.Aff (Promise, toAffE)
+
+type Auth = Auth.Value
 
 type JsonOrJsError = JsonOrJsError.Value
 

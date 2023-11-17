@@ -5,7 +5,7 @@ import Prelude
 import Data.Array as Array
 import Data.Either (isLeft)
 import MeowClient (Session)
-import MeowClient.Studio (acceptInvite, addProject, api, comment, follow, curators, managers, projects, inviteCurator, myStatus, removeCurator, removeProject, setDescription, setTitle, toggleCommenting, unfollow)
+import MeowClient.Studio (acceptInvite, addProject, api, curators, follow, inviteCurator, managers, myStatus, projects, removeCurator, removeProject, sendComment, setDescription, setTitle, toggleCommenting, unfollow)
 import Test.Spec (Spec, it)
 import Test.Spec.Assertions (shouldEqual, shouldSatisfy)
 import Test.Utils (unsafeUnwrapResult)
@@ -50,7 +50,7 @@ spec session = do
         unsafeUnwrapResult <$> removeProject 912122835 { session, id : 33429796 }
 
     it "leaves a comment" do
-        _ <- unsafeUnwrapResult <$> comment 201 0 "Hello!" { session, id : 33429796 }
+        _ <- unsafeUnwrapResult <$> sendComment 201 0 "Hello!" { session, id : 33429796 }
         pure unit
 
     it "toggles commenting" do

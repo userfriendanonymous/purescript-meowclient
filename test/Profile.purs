@@ -4,10 +4,7 @@ import Prelude
 
 import Data.Array as Array
 import Data.Either (isLeft)
-import Data.Maybe (isJust)
-import Data.Tuple (Tuple)
-import MeowClient.Profile (api, comment, comments, deleteComment, follow, messagesCount, status, toggleCommenting)
-import MeowClient.Profile as Profile
+import MeowClient.Profile (api, sendComment, comments, deleteComment, follow, messagesCount, status, toggleCommenting)
 import MeowClient.Profile.Status (Value(..))
 import MeowClient.Session as Session
 import Test.Spec (Spec, it)
@@ -21,7 +18,7 @@ spec session = do
         res.username `shouldEqual` "griffpatch"
 
     it "leaves a comment" do
-        _ <- unsafeUnwrapResult <$> comment 201 0 "Hello!" { username : "unknown123", session }
+        _ <- unsafeUnwrapResult <$> sendComment 201 0 "Hello!" { username : "unknown123", session }
         pure unit
 
     it "gets comments" do

@@ -3,30 +3,42 @@ module MeowClient
   , Message
   , Session
   , Visibility
-  , anonymousSession
-  , followUser
-  , isFavoritingProject
-  , isLovingProject
-  , logIn
-  , logOut
-  , messages
-  , profileComments
-  , projectApi
-  , projectCommentReplies
-  , projectComments
-  , searchProjects
-  , sendProfileComment
-  , sendProjectComment
-  , setFavoritingProject
-  , setLovingProject
-  , setProjectCommenting
-  , setSignature
-  , toggleProfileCommenting
-  , unfollowUser
-  , uploadToAssets
-  , userApi
-  , userMessagesCount
-  , userStatus
+--   , acceptStudioInvite
+--   , addProjectToStudio
+--   , anonymousSession
+--   , followUser
+--   , isFavoritingProject
+--   , isLovingProject
+--   , logIn
+--   , logOut
+--   , messages
+--   , profileComments
+--   , projectApi
+--   , projectCommentReplies
+--   , projectComments
+--   , searchProjects
+--   , sendProfileComment
+--   , sendProjectComment
+--   , sendStudioComment
+--   , setFavoritingProject
+--   , setLovingProject
+--   , setProjectCommenting
+--   , setProjectInstructions
+--   , setProjectNotesAndCredits
+--   , setProjectThumbnail
+--   , setProjectTitle
+--   , setSignature
+--   , shareProject
+--   , studioApi
+--   , studioCurators
+--   , studioManagers
+--   , toggleProfileCommenting
+--   , unfollowUser
+--   , unshareProject
+--   , uploadToAssets
+--   , userApi
+--   , userMessagesCount
+--   , userStatus
   )
   where
 
@@ -43,33 +55,44 @@ type JsonOrJsError = JsonOrJsError.Value
 type Visibility = Visibility.Value
 type Message = Message.Value
 
-anonymousSession = Session.anonymous
-logIn = Session.logIn
-logOut = Session.logOut
-messages = Session.messages
-searchProjects = Session.searchProjects
-setSignature = Session.setSignature
-uploadToAssets = Session.uploadToAssets
+-- anonymousSession = Session.anonymous
+-- logIn = Session.logIn
+-- logOut = Session.logOut
+-- messages = Session.messages
+-- searchProjects = Session.searchProjects
+-- setSignature = Session.setSignature
+-- uploadToAssets = Session.uploadToAssets
 
-userApi = Profile.api
-sendProfileComment = Profile.sendComment
-profileComments = Profile.comments
-followUser = Profile.follow
-unfollowUser = Profile.unfollow
-userMessagesCount = Profile.messagesCount
-toggleProfileCommenting = Profile.toggleCommenting
-userStatus = Profile.status
+-- userApi = Profile.api
+-- sendProfileComment = Profile.sendComment
+-- profileComments = Profile.comments
+-- followUser = Profile.follow
+-- unfollowUser = Profile.unfollow
+-- userMessagesCount = Profile.messagesCount
+-- toggleProfileCommenting = Profile.toggleCommenting
+-- userStatus = Profile.status
 
-projectApi = Project.api
-sendProjectComment = Project.sendComment
-projectComments = Project.comments
-projectCommentReplies = Project.commentReplies
-isLovingProject = Project.isLoving
-isFavoritingProject = Project.isFavoriting
-setProjectCommenting = Project.setCommenting
-setFavoritingProject = Project.setFavoriting
-setLovingProject = Project.setLoving
-setProjectTitle = Project.setTitle
-setProjectInstructions = Project.setInstructions
-setProjectNotesAndCredits = Project.setNotesAndCredits
-setProjectThumbnail = Project.setThumbnail
+-- projectApi = Project.api
+-- sendProjectComment = Project.sendComment
+-- projectComments = Project.comments
+-- projectCommentReplies = Project.commentReplies
+-- isLovingProject = Project.isLoving
+-- isFavoritingProject = Project.isFavoriting
+-- setProjectCommenting = Project.setCommenting
+-- setFavoritingProject = Project.setFavoriting
+-- setLovingProject = Project.setLoving
+-- setProjectTitle = Project.setTitle
+-- setProjectInstructions = Project.setInstructions
+-- setProjectNotesAndCredits = Project.setNotesAndCredits
+-- setProjectThumbnail = Project.setThumbnail
+-- shareProject = Project.share
+-- unshareProject = Project.unshare
+
+-- studioApi = Studio.api
+-- acceptStudioInvite = Studio.acceptInvite
+-- addProjectToStudio = Studio.addProject
+-- sendStudioComment = Studio.sendComment
+-- studioCurators = Studio.curators
+-- studioManagers = Studio.managers
+-- followStudio = Studio.follow
+-- unfollowStudio = Studio.unfollow

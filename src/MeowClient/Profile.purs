@@ -1,11 +1,15 @@
 module MeowClient.Profile
-  ( Pointer
+  ( Api
+  , Comment
+  , Pointer
+  , Status
   , api
-  , sendComment
   , comments
   , deleteComment
   , follow
   , messagesCount
+  , sendComment
+  , sendComment'
   , status
   , toggleCommenting
   , unfollow
@@ -19,7 +23,7 @@ import Data.Either (Either(..))
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Exception (Error)
-import MeowClient (JsonOrJsError)
+import MeowClient.JsonOrJsError as JsonOrJsError
 import MeowClient.Profile.Api as Api
 import MeowClient.Profile.Comment as Comment
 import MeowClient.Profile.Status as Status
@@ -27,6 +31,10 @@ import MeowClient.Session as Session
 import MeowClient.Utils (LeftF, RightF, decodeJsErrorOrJson)
 import Promise (Promise)
 import Promise.Aff (toAffE)
+
+type Api = Api.Value
+type Comment = Comment.Value
+type Status = Status.Value
 
 -- | Profile pointer.
 -- | ### Example
@@ -53,7 +61,7 @@ foreign import statusImpl :: RightF -> LeftF -> Pointer -> Effect (Promise (Eith
 -- |        Left error -> -- ...
 -- |        Right status -> -- ...
 -- | ```
-status :: Pointer -> Aff (Either JsonOrJsError Status.Value)
+status :: Pointer -> Aff (Either JsonOrJsError.Value Status.Value)
 status v = decodeJsErrorOrJson <$> (toAffE $ statusImpl Right Left v)
 
 foreign import followImpl :: RightF -> LeftF -> Pointer -> Effect (Promise (Either Error Unit))
@@ -104,6 +112,10 @@ foreign import sendCommentImpl :: RightF -> LeftF -> Int -> Int -> String -> Poi
 sendComment :: Int -> Int -> String -> Pointer -> Aff (Either Error Unit)
 sendComment commenteeId parentId content v = toAffE $ sendCommentImpl Right Left commenteeId parentId content v
 
+-- | Alias for `sendComment 0 0`.
+sendComment' :: String -> Pointer -> Aff (Either Error Unit)
+sendComment' = sendComment 0 0
+
 foreign import deleteCommentImpl :: RightF -> LeftF -> Int -> Pointer -> Effect (Promise (Either Error Unit))
 
 -- | Deletes a comment on a profile.
@@ -133,7 +145,7 @@ foreign import apiImpl :: RightF -> LeftF -> Pointer -> Effect (Promise (Either 
 -- |        Left error -> -- ...
 -- |        Right info -> -- ...
 -- | ```
-api :: Pointer -> Aff (Either JsonOrJsError Api.Value)
+api :: Pointer -> Aff (Either JsonOrJsError.Value Api.Value)
 api v = decodeJsErrorOrJson <$> toAffE (apiImpl Right Left v)
 
 foreign import messagesCountImpl :: RightF -> LeftF -> Pointer -> Effect (Promise (Either Error Json))
@@ -149,7 +161,7 @@ foreign import messagesCountImpl :: RightF -> LeftF -> Pointer -> Effect (Promis
 -- |        Left error -> -- ...
 -- |        Right count -> -- ...
 -- | ```
-messagesCount :: Pointer -> Aff (Either JsonOrJsError Int)
+messagesCount :: Pointer -> Aff (Either JsonOrJsError.Value Int)
 messagesCount v = decodeJsErrorOrJson <$> toAffE (messagesCountImpl Right Left v)
 
 foreign import commentsImpl :: RightF -> LeftF -> Int -> Pointer -> Effect (Promise (Either Error Json))
@@ -165,7 +177,7 @@ foreign import commentsImpl :: RightF -> LeftF -> Int -> Pointer -> Effect (Prom
 -- |        Left error -> -- ...
 -- |        Right comments' -> -- ...
 -- | ```
-comments :: Int -> Pointer -> Aff (Either JsonOrJsError (Array Comment.Value))
+comments :: Int -> Pointer -> Aff (Either JsonOrJsError.Value (Array Comment.Value))
 comments page v = decodeJsErrorOrJson <$> toAffE (commentsImpl Right Left page v)
 
 foreign import toggleCommentingImpl :: RightF -> LeftF -> Pointer -> Effect (Promise (Either Error Unit))

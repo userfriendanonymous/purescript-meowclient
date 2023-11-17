@@ -1,5 +1,6 @@
 module MeowClient.Forum
   ( Pointer
+  , Topic
   , createTopic
   , topics
   )
@@ -9,12 +10,14 @@ import Prelude
 
 import Data.Argonaut (Json)
 import Data.Either (Either(..))
-import Effect.Exception (Error)
 import Effect.Aff (Aff)
+import Effect.Exception (Error)
 import MeowClient (JsonOrJsError)
 import MeowClient.Forum.Topic as Topic
 import MeowClient.Session as Session
 import MeowClient.Utils (EffPromise, LeftF, RightF, toAffDecodeResult)
+
+type Topic = Topic.Value
 
 -- | Forum pointer.
 -- | ### Example

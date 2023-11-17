@@ -1,5 +1,6 @@
 module MeowClient.ForumPost
-  ( Pointer
+  ( Info
+  , Pointer
   , edit
   , info
   , source
@@ -17,6 +18,7 @@ import MeowClient.Session as Session
 import MeowClient.Utils (EffPromise, LeftF, RightF)
 import Promise.Aff (toAffE)
 
+type Info = Info.Value
 type JsonOrJsError = JsonOrJsError.Value
 
 -- | Forum post pointer.

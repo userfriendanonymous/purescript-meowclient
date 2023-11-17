@@ -14,13 +14,11 @@ to generate this file without the comments in this block.
 , dependencies =
   [ "aff"
   , "argonaut"
-  , "argonaut-codecs"
   , "arrays"
   , "console"
   , "effect"
   , "either"
   , "exceptions"
-  , "foldable-traversable"
   , "js-date"
   , "js-promise"
   , "js-promise-aff"
@@ -31,7 +29,6 @@ to generate this file without the comments in this block.
   , "prelude"
   , "spec"
   , "strings"
-  , "test-unit"
   , "tuples"
   ]
 , packages = ./packages.dhall

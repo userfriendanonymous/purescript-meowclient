@@ -48,7 +48,7 @@ export let addProjectImpl = ok => err => id => studio =>
 export let removeProjectImpl = ok => err => id => studio =>
     catchP(ok, err, () => toClass(studio).removeProject(id))
 
-export let commentImpl = ok => err => commenteeId => parentId => content => studio =>
+export let sendCommentImpl = ok => err => commenteeId => parentId => content => studio =>
     catchP(ok, err, () => toClass(studio).comment(content, parentId, commenteeId))
 
 export let toggleCommentingImpl = ok => err => studio =>

@@ -1,11 +1,16 @@
 module MeowClient.Project
-  ( Pointer
+  ( Comment
+  , CommentReply
+  , Pointer
   , api
-  , sendComment
   , commentReplies
   , comments
+  , favorite
   , isFavoriting
   , isLoving
+  , love
+  , sendComment
+  , sendComment'
   , setCommenting
   , setFavoriting
   , setInstructions
@@ -14,6 +19,8 @@ module MeowClient.Project
   , setThumbnail
   , setTitle
   , share
+  , unfavorite
+  , unlove
   , unshare
   )
   where
@@ -24,14 +31,17 @@ import Data.Argonaut (Json)
 import Data.Either (Either(..))
 import Effect.Aff (Aff)
 import Effect.Exception (Error)
-import MeowClient (JsonOrJsError)
+import MeowClient.JsonOrJsError as JsonOrJsError
+import MeowClient.Project.Api as Api
 import MeowClient.Project.Comment as Comment
 import MeowClient.Project.Comment.Reply as CommentReply
-import MeowClient.Project.Api as Api
 import MeowClient.Session as Session
 import MeowClient.Utils (LeftF, RightF, EffPromise, decodeJsErrorOrJson)
 import Node.Buffer (Buffer)
 import Promise.Aff (toAffE)
+
+type Comment = Comment.Value
+type CommentReply = CommentReply.Value
 
 -- | Project pointer.
 -- | ### Example
@@ -58,7 +68,7 @@ foreign import apiImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error
 -- |        Left error -> -- ...
 -- |        Right info -> -- ...
 -- | ```
-api :: Pointer -> Aff (Either JsonOrJsError Api.Value)
+api :: Pointer -> Aff (Either JsonOrJsError.Value Api.Value)
 api v = decodeJsErrorOrJson <$> toAffE (apiImpl Right Left v)
 
 foreign import commentsImpl :: RightF -> LeftF -> Int -> Int -> Pointer -> EffPromise (Either Error Json)
@@ -74,7 +84,7 @@ foreign import commentsImpl :: RightF -> LeftF -> Int -> Int -> Pointer -> EffPr
 -- |        Left error -> -- ...
 -- |        Right arrayOfComments -> -- ...
 -- | ```
-comments :: Int -> Int -> Pointer -> Aff (Either JsonOrJsError (Array Comment.Value))
+comments :: Int -> Int -> Pointer -> Aff (Either JsonOrJsError.Value (Array Comment.Value))
 comments offset limit v = decodeJsErrorOrJson <$> toAffE (commentsImpl Right Left offset limit v)
 
 foreign import commentRepliesImpl :: RightF -> LeftF -> Int -> Int -> Int -> Pointer -> EffPromise (Either Error Json)
@@ -90,7 +100,7 @@ foreign import commentRepliesImpl :: RightF -> LeftF -> Int -> Int -> Int -> Poi
 -- |        Left error -> -- ...
 -- |        Right replies -> -- ...
 -- | ```
-commentReplies :: Int -> Int -> Int -> Pointer -> Aff (Either JsonOrJsError (Array CommentReply.Value))
+commentReplies :: Int -> Int -> Int -> Pointer -> Aff (Either JsonOrJsError.Value (Array CommentReply.Value))
 commentReplies offset limit id v = decodeJsErrorOrJson <$> toAffE (commentRepliesImpl Right Left offset limit id v)
 
 foreign import sendCommentImpl :: RightF -> LeftF -> Int -> Int -> String -> Pointer -> EffPromise (Either Error Unit)
@@ -108,6 +118,10 @@ foreign import sendCommentImpl :: RightF -> LeftF -> Int -> Int -> String -> Poi
 -- | ```
 sendComment :: Int -> Int -> String -> Pointer -> Aff (Either Error Unit)
 sendComment commenteeId parentId content v = toAffE $ sendCommentImpl Right Left commenteeId parentId content v
+
+-- | Alias for `sendComment 0 0`.
+sendComment' :: String -> Pointer -> Aff (Either Error Unit)
+sendComment' = sendComment 0 0
 
 foreign import setCommentingImpl :: RightF -> LeftF -> Boolean -> Pointer -> EffPromise (Either Error Unit)
 
@@ -234,7 +248,7 @@ foreign import isLovingImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either 
 -- |        Left error -> -- ...
 -- |        Right isLoving' -> -- ...
 -- | ```
-isLoving :: Pointer -> Aff (Either JsonOrJsError Boolean)
+isLoving :: Pointer -> Aff (Either JsonOrJsError.Value Boolean)
 isLoving v = decodeJsErrorOrJson <$> toAffE (isLovingImpl Right Left v)
 
 foreign import isFavoritingImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
@@ -250,7 +264,7 @@ foreign import isFavoritingImpl :: RightF -> LeftF -> Pointer -> EffPromise (Eit
 -- |        Left error -> -- ...
 -- |        Right isFavoriting' -> -- ...
 -- | ```
-isFavoriting :: Pointer -> Aff (Either JsonOrJsError Boolean)
+isFavoriting :: Pointer -> Aff (Either JsonOrJsError.Value Boolean)
 isFavoriting v = decodeJsErrorOrJson <$> toAffE (isFavoritingImpl Right Left v)
 
 foreign import setLovingImpl :: RightF -> LeftF -> Boolean -> Pointer -> EffPromise (Either Error Unit)
@@ -284,3 +298,19 @@ foreign import setFavoritingImpl :: RightF -> LeftF -> Boolean -> Pointer -> Eff
 -- | ```
 setFavoriting :: Boolean -> Pointer -> Aff (Either Error Unit)
 setFavoriting state v = toAffE $ setFavoritingImpl Right Left state v
+
+-- | Alias for `setLoving true`.
+love :: Pointer -> Aff (Either Error Unit)
+love = setLoving true
+
+-- | Alias for `setLoving false`.
+unlove :: Pointer -> Aff (Either Error Unit)
+unlove = setLoving false
+
+-- | Alias for `setFavoriting true`.
+favorite :: Pointer -> Aff (Either Error Unit)
+favorite = setFavoriting true
+
+-- | Alias for `setFavoriting false`.
+unfavorite :: Pointer -> Aff (Either Error Unit)
+unfavorite = setFavoriting false

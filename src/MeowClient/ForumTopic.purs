@@ -1,5 +1,6 @@
 module MeowClient.ForumTopic
-  ( Pointer
+  ( Info
+  , Pointer
   , follow
   , info
   , posts
@@ -21,6 +22,8 @@ import MeowClient.Session as Session
 import MeowClient.JsonOrJsError as JsonOrJsError
 import MeowClient.Utils (EffPromise, LeftF, RightF, TupleF, toAffDecodeResult)
 import Promise.Aff (toAffE)
+
+type Info = Info.Value
 
 -- | Forum topic pointer.
 -- | ### Example

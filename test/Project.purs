@@ -3,13 +3,12 @@ module Test.Project where
 import Prelude
 
 import Data.Array as Array
-import Data.Either (isLeft)
 import Effect.Class (liftEffect)
-import MeowClient.Project (api, comment, commentReplies, comments, isFavoriting, isLoving, setCommenting, setFavoriting, setInstructions, setLoving, setNotesAndCredits, setThumbnail, setTitle, share, unshare)
+import MeowClient.Project (api, commentReplies, comments, isFavoriting, isLoving, sendComment, setCommenting, setFavoriting, setInstructions, setLoving, setNotesAndCredits, setThumbnail, setTitle, share, unshare)
 import MeowClient.Session as Session
 import Node.Buffer as Buffer
 import Test.Spec (Spec, it)
-import Test.Spec.Assertions (shouldEqual, shouldSatisfy)
+import Test.Spec.Assertions (shouldEqual)
 import Test.Utils (unsafeUnwrapResult)
 
 spec :: Session.Value -> Spec Unit
@@ -27,7 +26,7 @@ spec session = do
         (Array.length v) `shouldEqual` 3
 
     it "leaves a comment" do
-        _ <- unsafeUnwrapResult <$> comment 0 0 "Hello!" { id : 419460779, session }
+        _ <- unsafeUnwrapResult <$> sendComment 0 0 "Hello!" { id : 419460779, session }
         pure unit
 
     it "sets commenting" do

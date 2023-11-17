@@ -1,17 +1,20 @@
 module MeowClient.Studio
-  ( Pointer
+  ( Api
+  , MyStatus
+  , Pointer
+  , Project
   , acceptInvite
   , addProject
   , api
-  , comment
-  , follow
   , curators
-  , managers
-  , projects
+  , follow
   , inviteCurator
+  , managers
   , myStatus
+  , projects
   , removeCurator
   , removeProject
+  , sendComment
   , setDescription
   , setTitle
   , toggleCommenting
@@ -25,13 +28,17 @@ import Data.Argonaut (Json)
 import Data.Either (Either(..))
 import Effect.Aff (Aff)
 import Effect.Exception (Error)
-import MeowClient (JsonOrJsError)
+import MeowClient.JsonOrJsError as JsonOrJsError
 import MeowClient.Profile.Api as ProfileApi
 import MeowClient.Session as Session
 import MeowClient.Studio.Api as Api
 import MeowClient.Studio.MyStatus as MyStatus
 import MeowClient.Studio.Project as Project
 import MeowClient.Utils (RightF, LeftF, EffPromise, toAffDecodeResult)
+
+type Api = Api.Value
+type MyStatus = MyStatus.Value
+type Project = Project.Value
 
 -- | Studio pointer.
 -- | ### Example
@@ -58,7 +65,7 @@ foreign import apiImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error
 -- |        Left error -> -- ...
 -- |        Right info -> -- ...
 -- | ```
-api :: Pointer -> Aff (Either JsonOrJsError Api.Value)
+api :: Pointer -> Aff (Either JsonOrJsError.Value Api.Value)
 api v = toAffDecodeResult $ apiImpl Right Left v
 
 foreign import followImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
@@ -74,7 +81,7 @@ foreign import followImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Er
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-follow :: Pointer -> Aff (Either JsonOrJsError Unit)
+follow :: Pointer -> Aff (Either JsonOrJsError.Value Unit)
 follow v = toAffDecodeResult $ followImpl Right Left v
 
 foreign import unfollowImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
@@ -90,7 +97,7 @@ foreign import unfollowImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either 
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-unfollow :: Pointer -> Aff (Either JsonOrJsError Unit)
+unfollow :: Pointer -> Aff (Either JsonOrJsError.Value Unit)
 unfollow v = toAffDecodeResult $ followImpl Right Left v
 
 foreign import setTitleImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Json)
@@ -106,7 +113,7 @@ foreign import setTitleImpl :: RightF -> LeftF -> String -> Pointer -> EffPromis
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-setTitle :: String -> Pointer -> Aff (Either JsonOrJsError Unit)
+setTitle :: String -> Pointer -> Aff (Either JsonOrJsError.Value Unit)
 setTitle content v = toAffDecodeResult $ setTitleImpl Right Left content v
 
 foreign import setDescriptionImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Json)
@@ -122,7 +129,7 @@ foreign import setDescriptionImpl :: RightF -> LeftF -> String -> Pointer -> Eff
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-setDescription :: String -> Pointer -> Aff (Either JsonOrJsError Unit)
+setDescription :: String -> Pointer -> Aff (Either JsonOrJsError.Value Unit)
 setDescription content v = toAffDecodeResult $ setDescriptionImpl Right Left content v
 
 foreign import inviteCuratorImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Json)
@@ -138,7 +145,7 @@ foreign import inviteCuratorImpl :: RightF -> LeftF -> String -> Pointer -> EffP
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-inviteCurator :: String -> Pointer -> Aff (Either JsonOrJsError Unit)
+inviteCurator :: String -> Pointer -> Aff (Either JsonOrJsError.Value Unit)
 inviteCurator username v = toAffDecodeResult $ inviteCuratorImpl Right Left username v
 
 foreign import removeCuratorImpl :: RightF -> LeftF -> String -> Pointer -> EffPromise (Either Error Json)
@@ -154,7 +161,7 @@ foreign import removeCuratorImpl :: RightF -> LeftF -> String -> Pointer -> EffP
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-removeCurator :: String -> Pointer -> Aff (Either JsonOrJsError Unit)
+removeCurator :: String -> Pointer -> Aff (Either JsonOrJsError.Value Unit)
 removeCurator username v = toAffDecodeResult $ removeCuratorImpl Right Left username v
 
 foreign import acceptInviteImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
@@ -170,7 +177,7 @@ foreign import acceptInviteImpl :: RightF -> LeftF -> Pointer -> EffPromise (Eit
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-acceptInvite :: Pointer -> Aff (Either JsonOrJsError Unit)
+acceptInvite :: Pointer -> Aff (Either JsonOrJsError.Value Unit)
 acceptInvite v = toAffDecodeResult $ acceptInviteImpl Right Left v
 
 foreign import myStatusImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
@@ -186,7 +193,7 @@ foreign import myStatusImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either 
 -- |        Left error -> -- ...
 -- |        Right status -> -- ...
 -- | ```
-myStatus :: Pointer -> Aff (Either JsonOrJsError MyStatus.Value)
+myStatus :: Pointer -> Aff (Either JsonOrJsError.Value MyStatus.Value)
 myStatus v = toAffDecodeResult $ myStatusImpl Right Left v
 
 foreign import addProjectImpl :: RightF -> LeftF -> Int -> Pointer -> EffPromise (Either Error Json)
@@ -202,7 +209,7 @@ foreign import addProjectImpl :: RightF -> LeftF -> Int -> Pointer -> EffPromise
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-addProject :: Int -> Pointer -> Aff (Either JsonOrJsError Unit)
+addProject :: Int -> Pointer -> Aff (Either JsonOrJsError.Value Unit)
 addProject id v = toAffDecodeResult $ addProjectImpl Right Left id v
 
 foreign import removeProjectImpl :: RightF -> LeftF -> Int -> Pointer -> EffPromise (Either Error Json)
@@ -218,24 +225,24 @@ foreign import removeProjectImpl :: RightF -> LeftF -> Int -> Pointer -> EffProm
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-removeProject :: Int -> Pointer -> Aff (Either JsonOrJsError Unit)
+removeProject :: Int -> Pointer -> Aff (Either JsonOrJsError.Value Unit)
 removeProject id v = toAffDecodeResult $ removeProjectImpl Right Left id v
 
-foreign import commentImpl :: RightF -> LeftF -> Int -> Int -> String -> Pointer -> EffPromise (Either Error Json)
+foreign import sendCommentImpl :: RightF -> LeftF -> Int -> Int -> String -> Pointer -> EffPromise (Either Error Json)
 
 -- | Leaves a comment on a studio.
 -- | 
--- | `comment [commentee id] [parent id] [studio]`
+-- | `sendComment [commentee id] [parent id] [studio]`
 -- | ### Example
 -- | ```purescript
 -- | do
--- |    result <- comment 0 0 { session, id : 34104548 }
+-- |    result <- sendComment 0 0 { session, id : 34104548 }
 -- |    case result of
 -- |        Left error -> -- ...
 -- |        Right commentId -> -- ...
 -- | ```
-comment :: Int -> Int -> String -> Pointer -> Aff (Either JsonOrJsError Int)
-comment commenteeId parentId content v = toAffDecodeResult $ commentImpl Right Left commenteeId parentId content v
+sendComment :: Int -> Int -> String -> Pointer -> Aff (Either JsonOrJsError.Value Int)
+sendComment commenteeId parentId content v = toAffDecodeResult $ sendCommentImpl Right Left commenteeId parentId content v
 
 foreign import toggleCommentingImpl :: RightF -> LeftF -> Pointer -> EffPromise (Either Error Json)
 
@@ -250,7 +257,7 @@ foreign import toggleCommentingImpl :: RightF -> LeftF -> Pointer -> EffPromise 
 -- |        Left error -> -- ...
 -- |        Right _ -> -- ...
 -- | ```
-toggleCommenting :: Pointer -> Aff (Either JsonOrJsError Unit)
+toggleCommenting :: Pointer -> Aff (Either JsonOrJsError.Value Unit)
 toggleCommenting v = toAffDecodeResult $ toggleCommentingImpl Right Left v
 
 foreign import curatorsImpl :: RightF -> LeftF -> Int -> Int -> Pointer -> EffPromise (Either Error Json)
@@ -266,7 +273,7 @@ foreign import curatorsImpl :: RightF -> LeftF -> Int -> Int -> Pointer -> EffPr
 -- |        Left error -> -- ...
 -- |        Right curators' -> -- ...
 -- | ```
-curators :: Int -> Int -> Pointer -> Aff (Either JsonOrJsError (Array ProfileApi.Value))
+curators :: Int -> Int -> Pointer -> Aff (Either JsonOrJsError.Value (Array ProfileApi.Value))
 curators offset limit v = toAffDecodeResult $ curatorsImpl Right Left offset limit v
 
 foreign import managersImpl :: RightF -> LeftF -> Int -> Int -> Pointer -> EffPromise (Either Error Json)
@@ -282,7 +289,7 @@ foreign import managersImpl :: RightF -> LeftF -> Int -> Int -> Pointer -> EffPr
 -- |        Left error -> -- ...
 -- |        Right managers' -> -- ...
 -- | ```
-managers :: Int -> Int -> Pointer -> Aff (Either JsonOrJsError (Array ProfileApi.Value))
+managers :: Int -> Int -> Pointer -> Aff (Either JsonOrJsError.Value (Array ProfileApi.Value))
 managers offset limit v = toAffDecodeResult $ managersImpl Right Left offset limit v
 
 foreign import projectsImpl :: RightF -> LeftF -> Int -> Int -> Pointer -> EffPromise (Either Error Json)
@@ -298,5 +305,5 @@ foreign import projectsImpl :: RightF -> LeftF -> Int -> Int -> Pointer -> EffPr
 -- |        Left error -> -- ...
 -- |        Right projects' -> -- ...
 -- | ```
-projects :: Int -> Int -> Pointer -> Aff (Either JsonOrJsError (Array Project.Value))
+projects :: Int -> Int -> Pointer -> Aff (Either JsonOrJsError.Value (Array Project.Value))
 projects offset limit v = toAffDecodeResult $ projectsImpl Right Left offset limit v
