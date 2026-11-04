@@ -8,5 +8,6 @@
 /.purs*
 /.psa*
 /.spago
+spago.lock
 package-lock.json
 config.json
